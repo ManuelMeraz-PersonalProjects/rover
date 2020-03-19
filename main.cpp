@@ -38,7 +38,6 @@ int main() {
     delay(1);   // delay a moment to let hardware settings settle.
 
     std::cout << "Running forward at 50%" << std::endl;
-    digitalWrite(DIR1, HIGH);
     pwmWrite(PWM1, 50);  // set the Duty Cycle for this range.
     delay(5000);
 
@@ -46,7 +45,6 @@ int main() {
     pwmWrite(PWM1, 0);  // set the Duty Cycle for this range.
     delay(1000);
 
-    digitalWrite(DIR1, LOW);
     std::cout << "Running reverse at 50%" << std::endl;
     pwmWrite(PWM1, 50);  // set the Duty Cycle for this range.
     delay(5000);
