@@ -3,17 +3,22 @@
 
 
 int main() {
-    // LEDPIN is wiringPi Pin #1 or GPIO #18
+    // PWM1 is wiringPi Pin #1 or GPIO #18
     // we choose this pin since it supports PWM as
     // PWM is not supported by any other GPIO pins.
-    const int LEDPIN = 23;
+    constexpr int PWM1 = 23;
+    constexpr int DIR1 = 21;
+
+    constexpr int PWM2 = 24;
+    constexpr int DIR2 = 22;
 
     if (wiringPiSetup() == -1) {
         printf("Setup wiringPi Failed!\n");
         return -1;
     }
 
-    pinMode(LEDPIN, PWM_OUTPUT);
+    pinMode(DIR1, HIGH);
+    pinMode(PWM1, PWM_OUTPUT);
     // set the PWM mode to Mark Space
     //pwmSetMode(PWM_MODE_MS);
     pwmSetMode(0);
@@ -31,17 +36,17 @@ int main() {
     pwmSetRange(range);  // range is 2500 counts to give us half second.
     delay(1);   // delay a moment to let hardware settings settle.
 
-    pwmWrite(LEDPIN, 50);  // set the Duty Cycle for this range.
+    pwmWrite(PWM1, 10);  // set the Duty Cycle for this range.
     printf(" PWM Duty Cycle %d\n", 50);
     delay(5000);
 
-    pwmWrite(LEDPIN, 0);  // set the Duty Cycle for this range.
+    pwmWrite(PWM1, 0);  // set the Duty Cycle for this range.
     // cleanup the environment. set each pin to low
     // and set the mode to INPUT. These steps make sure
     // the equipment is safe to manipulate and prevents
     // possible short and equipment damage from energized pin.
-    pinMode(LEDPIN, INPUT);
-    digitalWrite(LEDPIN, LOW);
+    pinMode(PWM1, INPUT);
+    digitalWrite(PWM1, LOW);
 
     return 0;
 }
