@@ -1,5 +1,6 @@
 #include <wiringPi.h>
 #include <cstdio>
+#include <iostream>
 
 
 int main() {
@@ -36,17 +37,22 @@ int main() {
     pwmSetRange(range);  // range is 2500 counts to give us half second.
     delay(1);   // delay a moment to let hardware settings settle.
 
-    pwmWrite(PWM1, 10);  // set the Duty Cycle for this range.
-    printf(" PWM Duty Cycle %d\n", 50);
+    std::cout << "Running forward at 50%" << std::endl;
+    digitalWrite(DIR1, HIGH);
+    pwmWrite(PWM1, 50);  // set the Duty Cycle for this range.
+    delay(5000);
+
+    std::cout << "Stopping for 1 second" << std::endl;
+    pwmWrite(PWM1, 0);  // set the Duty Cycle for this range.
+    delay(1000);
+
+    digitalWrite(DIR1, LOW);
+    std::cout << "Running reverse at 50%" << std::endl;
+    pwmWrite(PWM1, 50);  // set the Duty Cycle for this range.
     delay(5000);
 
     pwmWrite(PWM1, 0);  // set the Duty Cycle for this range.
-    // cleanup the environment. set each pin to low
-    // and set the mode to INPUT. These steps make sure
-    // the equipment is safe to manipulate and prevents
-    // possible short and equipment damage from energized pin.
-    pinMode(PWM1, INPUT);
-    digitalWrite(PWM1, LOW);
 
+    pinMode(PWM1, 0);
     return 0;
 }
