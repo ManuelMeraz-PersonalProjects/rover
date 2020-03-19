@@ -1,18 +1,18 @@
 #include <wiringPi.h>
+#include <iostream>
 
-int main()
-{
-    wiringPiSetup();
-    pinMode(0, OUTPUT);
+int main() {
+    std::cout << "Odroid N2 wiringPi test program\n";
 
-    for (;;)
-    {
-        digitalWrite(0, HIGH);
-        delay(1000);
-        digitalWrite(0, LOW);
-        delay(1000);
+    if (wiringPiSetupGpio() == -1) {
+        wiringPiFailure(WPI_FATAL, "Failed to setup wiring pi.");
+        return 1;
     }
-    return 0;
+
+    pinMode(0, PWM_OUTPUT);
+    pwmSetClock(2);
+    pwmSetRange(10);
+    pwmWrite(0, 5);
+
+    for (;;) delay(1000);
 }
-
-
