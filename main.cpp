@@ -2,6 +2,18 @@
 #include <cstdio>
 #include <iostream>
 
+void run_motors(int pwm_pin, int dir_pin, int dir_mode, int duty_cycle) {
+    digitalWrite(dir_pin, dir_mode);
+    for (int i = 0; i <= duty_cycle; i+=10) {
+        pwmWrite(pwm_pin, i);  // set the Duty Cycle for this range.
+        delay(100);
+    }
+
+    for (int i = duty_cycle; i >= 0; i-=10) {
+        pwmWrite(pwm_pin, i);  // set the Duty Cycle for this range.
+        delay(100);
+    }
+}
 
 int main() {
     // PWM1 is wiringPi Pin #1 or GPIO #18
@@ -18,39 +30,29 @@ int main() {
         return -1;
     }
 
-    pinMode(DIR1, HIGH);
+    pinMode(DIR1, OUTPUT);
+    pinMode(DIR2, OUTPUT);
     pinMode(PWM1, PWM_OUTPUT);
-    // set the PWM mode to Mark Space
-    //pwmSetMode(PWM_MODE_MS);
-    pwmSetMode(0);
-    // set the clock divisor to reduce the 19.2 Mhz clock
-    // to something slower, 5 Khz.
-    // Range of pwmSetClock() is 2 to 4095.
+    pinMode(PWM2, PWM_OUTPUT);
     pwmSetClock(128);  // 19.2 Mhz divided by 3840 is 5 Khz.
 
-    // set the PWM range which is the value for the range counter
-    // which is decremented at the modified clock frequency.
-    // in this case we are decrementing the range counter 5,000
-    // times per second since the clock at 19.2 Mhz is being
-    // divided by 3840 to give us 5 Khz.
     constexpr int range = 100;
     pwmSetRange(range);  // range is 2500 counts to give us half second.
     delay(1);   // delay a moment to let hardware settings settle.
 
-    std::cout << "Running forward at 50%" << std::endl;
-    pwmWrite(PWM1, 50);  // set the Duty Cycle for this range.
-    delay(5000);
+    constexpr int duty_cycle = 500;
+    std::cout << "Running forward" << std::endl;
+    run_motors(PWM1, DIR1, LOW, duty_cycle);
+    run_motors(PWM2, DIR2, LOW, duty_cycle);
 
-    std::cout << "Stopping for 1 second" << std::endl;
-    pwmWrite(PWM1, 0);  // set the Duty Cycle for this range.
-    delay(1000);
+    std::cout << "Running reverse" << std::endl;
+    run_motors(PWM1, DIR1, HIGH, duty_cycle);
+    run_motors(PWM2, DIR2, HIGH, duty_cycle);
 
-    std::cout << "Running reverse at 50%" << std::endl;
-    pwmWrite(PWM1, 50);  // set the Duty Cycle for this range.
-    delay(5000);
 
-    pwmWrite(PWM1, 0);  // set the Duty Cycle for this range.
-
+    pinMode(DIR1, 0);
+    pinMode(DIR2, 0);
     pinMode(PWM1, 0);
+    pinMode(PWM2, 0);
     return 0;
 }
