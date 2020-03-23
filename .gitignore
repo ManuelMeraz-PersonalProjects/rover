@@ -36,3 +36,6 @@
 
 # ignore build directories
 *build*
+
+# ignore install directory from colcon
+*install*
