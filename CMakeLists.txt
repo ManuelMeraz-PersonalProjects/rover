@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 project("ROS2 Master")
 
-if (POLICY CMP0048)
-    cmake_policy(SET CMP0048 NEW)
-endif (POLICY CMP0048)
-
 # usually I put this in a separate file include("/opt/ros/_common/Colcon.cmake")
 function(colcon_add_subdirectories)
   cmake_parse_arguments(PARSE_ARGV 0 "ARG" "" "BUILD_BASE;BASE_PATHS" "")
@@ -43,7 +39,7 @@ function(colcon_add_subdirectories)
 endfunction()
 
 colcon_add_subdirectories(
-	BUILD_BASE "${PROJECT_SOURCE_DIR}/build"
+	BUILD_BASE "${PROJECT_SOURCE_DIR}}/builds/${CMAKE_BUILD_TYPE}"
 	BASE_PATHS "${PROJECT_SOURCE_DIR}/src/"
 	--packages-select motor_controls turtlesim
 )
