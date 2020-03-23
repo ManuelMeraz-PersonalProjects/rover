@@ -39,7 +39,7 @@ function(colcon_add_subdirectories)
 endfunction()
 
 colcon_add_subdirectories(
-	BUILD_BASE "${PROJECT_SOURCE_DIR}}/builds/${CMAKE_BUILD_TYPE}"
+	BUILD_BASE "$ENV{WORKSPACE}/builds/rover_workspace/${CMAKE_BUILD_TYPE}"
 	BASE_PATHS "${PROJECT_SOURCE_DIR}/src/"
-	--packages-select motor_controls turtlesim
+	--packages-select turtlesim motor_controls
 )
