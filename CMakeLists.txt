@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.10)
 project("ROS2 Master")
 
 # usually I put this in a separate file include("/opt/ros/_common/Colcon.cmake")
