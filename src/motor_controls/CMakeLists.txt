@@ -22,7 +22,7 @@ find_library(rt rt REQUIRED)
 find_library(crypt crypt REQUIRED)
 
 add_executable(motor_controls src/motor_controls.cpp)
-ament_target_dependencies(motor_controls wiringPi Threads::Thredas rt crypt)
+target_link_libraries(motor_controls PRIVATE wiringPi Threads::Threads rt crypt)
 
 target_include_directories(motor_controls
         PUBLIC
