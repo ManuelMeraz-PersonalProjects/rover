@@ -13,26 +13,9 @@ if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif ()
 
-add_subdirectory(thirdparty)
-
-# find dependencies
-find_package(Threads REQUIRED)
-find_library(rt rt REQUIRED)
-find_library(crypt crypt REQUIRED)
-
-add_executable(motor_controls src/motor_controls/motor_controls.cpp)
-target_link_libraries(motor_controls PRIVATE wiringPi Threads::Threads rt crypt)
-
-target_include_directories(motor_controls
-        PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-        PRIVATE
-        WIRINGPI_INCLUDE_DIRS)
-
-install(TARGETS motor_controls
-        EXPORT export_${PROJECT_NAME}
-        DESTINATION lib/${PROJECT_NAME})
+# set thirdparty_libraries
+include(thirdparty/FindThirdParty.cmake)
+add_subdirectory(src)
 
 if (BUILD_TESTING)
     enable_testing()
