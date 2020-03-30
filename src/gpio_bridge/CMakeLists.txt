@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(motor_controls)
+project(gpio_bridge)
 
 if (NOT CMAKE_C_STANDARD)
     set(CMAKE_C_STANDARD 99)
@@ -16,12 +16,11 @@ endif ()
 add_subdirectory(thirdparty)
 
 # find dependencies
-find_package(ament_cmake REQUIRED)
 find_package(Threads REQUIRED)
 find_library(rt rt REQUIRED)
 find_library(crypt crypt REQUIRED)
 
-add_executable(motor_controls src/motor_controls.cpp)
+add_executable(motor_controls src/motor_controls/motor_controls.cpp)
 target_link_libraries(motor_controls PRIVATE wiringPi Threads::Threads rt crypt)
 
 target_include_directories(motor_controls
@@ -36,14 +35,5 @@ install(TARGETS motor_controls
         DESTINATION lib/${PROJECT_NAME})
 
 if (BUILD_TESTING)
-    find_package(ament_lint_auto REQUIRED)
-    # the following line skips the linter which checks for copyrights
-    # uncomment the line when a copyright and license is not present in all source files
-    #set(ament_cmake_copyright_FOUND TRUE)
-    # the following line skips cpplint (only works in a git repo)
-    # uncomment the line when this package is not in a git repo
-    #set(ament_cmake_cpplint_FOUND TRUE)
-    ament_lint_auto_find_test_dependencies()
+    enable_testing()
 endif ()
-
-ament_package()
