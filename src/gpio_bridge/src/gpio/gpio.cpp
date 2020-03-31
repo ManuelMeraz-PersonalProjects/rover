@@ -10,12 +10,12 @@ auto gpio::is_ready() -> bool
 {
    return wiringPiSetup() != -1;
 }
-auto gpio::set_pin_mode(uint8_t pin_number, gpio::Mode mode)
+auto gpio::set_pin_mode(uint8_t pin_number, gpio::Mode mode) -> void
 {
    pinMode(pin_number, mode);
 }
 
-auto gpio::set_duty_cycle(uint8_t pin_number, uint8_t duty_cycle)
+auto gpio::set_duty_cycle(uint8_t pin_number, uint8_t duty_cycle) -> void
 {
    pwmWrite(pin_number, duty_cycle);
 }

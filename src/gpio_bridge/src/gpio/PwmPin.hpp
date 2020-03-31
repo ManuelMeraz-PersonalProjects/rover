@@ -5,24 +5,20 @@
 #ifndef GPIO_BRIDGE_PWMPIN_HPP
 #define GPIO_BRIDGE_PWMPIN_HPP
 
+#include "Pin.hpp"
 #include "gpio.hpp"
 
 #include <cstdint>
 
 namespace gpio {
-class PWMPin
+class PWMPin : public Pin
 {
  public:
-   constexpr PWMPin(uint8_t pin_number, Mode mode = Mode::PWM_OUTPUT);
+   explicit PWMPin(uint8_t pin_number, Mode mode = Mode::PWM_OUTPUT);
    ~PWMPin();
-
-   [[nodiscard]] auto pin_number() const -> uint8_t;
 
    [[nodiscard]] auto duty_cycle() const -> uint8_t;
    auto set_duty_cycle(uint8_t duty_cycle);
-
-   auto mode() -> Mode;
-   auto set_mode(Mode mode);
 
  private:
    uint8_t m_pin_number;

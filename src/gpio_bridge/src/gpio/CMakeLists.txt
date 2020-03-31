@@ -2,7 +2,7 @@ add_library(gpio
         gpio.hpp
         gpio.cpp
         PwmPin.hpp
-        PwmPin.cpp)
+        PwmPin.cpp Pin.cpp Pin.hpp)
 
 add_library(gpio_bridge::gpio ALIAS gpio)
 
