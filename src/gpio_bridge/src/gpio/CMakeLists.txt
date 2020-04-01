@@ -1,8 +1,8 @@
 add_library(gpio
-        gpio.hpp
+        SHARED
+        digital.cpp
         gpio.cpp
-        PwmPin.hpp
-        PwmPin.cpp Pin.cpp Pin.hpp)
+        pwm.cpp)
 
 add_library(gpio_bridge::gpio ALIAS gpio)
 
@@ -15,4 +15,7 @@ target_link_libraries(gpio
 
 target_include_directories(gpio
         PUBLIC
+        ${PROJECT_SOURCE_DIR}/src/
+
+        PRIVATE
         WIRINGPI_INCLUDE_DIRS)
