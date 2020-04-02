@@ -8,16 +8,16 @@
 
 #include <wiringPi.h>
 
-auto gpio::pwm::set_duty_cycle(uint8_t pin_number, uint8_t duty_cycle) -> void
+void gpio::pwm::set_duty_cycle(uint8_t pin_number, uint8_t duty_cycle)
 {
    pwmWrite(pin_number, duty_cycle);
 }
 
-auto gpio::pwm::set_clock(uint8_t hz) -> void
+void gpio::pwm::set_clock(uint8_t hz)
 {
    pwmSetClock(hz);
 }
-auto gpio::pwm::set_range(uint16_t range) -> void
+void gpio::pwm::set_range(uint16_t range)
 {
    pwmSetRange(range);
 }
@@ -50,7 +50,7 @@ auto gpio::pwm::Pin::duty_cycle() const -> uint8_t
    return m_duty_cycle;
 }
 
-auto gpio::pwm::Pin::set_duty_cycle(uint8_t duty_cycle) -> void
+void gpio::pwm::Pin::set_duty_cycle(uint8_t duty_cycle)
 {
    m_duty_cycle = duty_cycle;
    gpio::pwm::set_duty_cycle(m_pin_number, duty_cycle);

@@ -8,7 +8,7 @@
 
 #include <wiringPi.h>
 
-auto gpio::digital::write(uint8_t pin_number, Write mode) -> void
+void gpio::digital::write(uint8_t pin_number, Write mode)
 {
    digitalWrite(pin_number, static_cast<int>(mode));
 }
@@ -28,13 +28,13 @@ auto gpio::digital::Pin::mode() const -> Mode
    return m_mode;
 }
 
-auto gpio::digital::Pin::set_mode(Mode mode) -> void
+void gpio::digital::Pin::set_mode(Mode mode)
 {
    m_mode = mode;
    gpio::set_pin_mode(m_pin_number, static_cast<uint8_t>(m_mode));
 }
 
-auto gpio::digital::Pin::write(Write mode) -> void
+void gpio::digital::Pin::write(Write mode)
 {
    digitalWrite(m_pin_number, static_cast<int>(mode));
 }

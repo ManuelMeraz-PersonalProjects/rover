@@ -9,9 +9,9 @@
 namespace gpio::pwm {
 enum class Mode : int { OUTPUT = 4, SOFT_OUTPUT = 6, TONE_OUTPUTOFF = 8, OFF = 0 };
 
-auto set_duty_cycle(uint8_t pin_number, uint8_t duty_cycle) -> void;
-auto set_clock(uint8_t hz) -> void;
-auto set_range(uint16_t range) -> void;
+void set_duty_cycle(uint8_t pin_number, uint8_t duty_cycle);
+void set_clock(uint8_t hz);
+void set_range(uint16_t range);
 
 class Pin
 {
@@ -23,7 +23,7 @@ class Pin
    auto set_mode(Mode mode);
 
    [[nodiscard]] auto duty_cycle() const -> uint8_t;
-   auto set_duty_cycle(uint8_t duty_cycle) -> void;
+   void set_duty_cycle(uint8_t duty_cycle);
 
  private:
    uint8_t m_pin_number{};

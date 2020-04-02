@@ -11,7 +11,7 @@ namespace gpio::digital {
 enum class Mode : uint8_t { INPUT = 0, OUTPUT = 1, OFF = 0 };
 enum class Write : uint8_t { LOW = 0, HIGH = 1 };
 
-auto write(uint8_t pin_number, digital::Write mode) -> void;
+void write(uint8_t pin_number, digital::Write mode);
 
 class Pin
 {
@@ -20,8 +20,8 @@ class Pin
    ~Pin();
 
    [[nodiscard]] auto mode() const -> Mode;
-   auto set_mode(Mode mode) -> void;
-   auto write(Write mode) -> void;
+   void set_mode(Mode mode);
+   void write(Write mode);
 
  private:
    uint8_t m_pin_number{};
