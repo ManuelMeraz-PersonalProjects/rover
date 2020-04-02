@@ -15,7 +15,7 @@ auto gpio::set_pin_mode(uint8_t pin_number, uint8_t mode) -> void
 {
    pinMode(pin_number, static_cast<int>(mode));
 }
-auto gpio::sleep(std::chrono::microseconds duration) -> void
+auto gpio::sleep(std::chrono::milliseconds duration) -> void
 {
    ::delay(static_cast<int>(duration.count()));
 }

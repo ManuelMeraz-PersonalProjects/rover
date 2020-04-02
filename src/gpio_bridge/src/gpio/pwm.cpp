@@ -25,10 +25,12 @@ auto gpio::pwm::set_range(uint16_t range) -> void
 gpio::pwm::Pin::Pin(uint8_t pin_number, Mode mode) : m_pin_number(pin_number), m_mode(mode)
 {
    gpio::set_pin_mode(m_pin_number, static_cast<uint8_t>(m_mode));
+   set_duty_cycle(0);
 }
 
 gpio::pwm::Pin::~Pin()
 {
+   set_duty_cycle(0);
    gpio::set_pin_mode(m_pin_number, static_cast<uint8_t>(Mode::OFF));
 }
 

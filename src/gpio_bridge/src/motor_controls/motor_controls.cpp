@@ -18,8 +18,7 @@ void run_motors(pwm::Pin& pwm_pin, digital::Pin& dir_pin, digital::Write write_m
       gpio::sleep(100ms);
    }
 
-   for (int duty_cycle = max_duty_cycle; duty_cycle >= max_duty_cycle;
-        duty_cycle -= DUTY_CYCLE_DELTA) {
+   for (int duty_cycle = max_duty_cycle; duty_cycle >= 0; duty_cycle -= DUTY_CYCLE_DELTA) {
       pwm_pin.set_duty_cycle(duty_cycle);
       gpio::sleep(100ms);
    }
