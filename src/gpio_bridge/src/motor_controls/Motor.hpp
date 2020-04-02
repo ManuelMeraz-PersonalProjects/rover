@@ -5,7 +5,9 @@
 #ifndef GPIO_BRIDGE_MOTOR_HPP
 #define GPIO_BRIDGE_MOTOR_HPP
 
-#include <gpio/gpio.hpp>
+#include "gpio/gpio.hpp"
+
+#include <optional>
 namespace motor_controls {
 
 enum class Direction { FORWARD, REVERSE };
@@ -20,7 +22,9 @@ class Motor
    [[nodiscard]] auto duty_cycle() const -> uint8_t;
 
    void stop();
-   void actuate(Direction direction, uint8_t duty_cycle);
+   void actuate(Direction direction,
+                uint8_t duty_cycle,
+                std::optional<std::chrono::milliseconds> time = std::nullopt);
 
  private:
    static constexpr std::chrono::milliseconds DELTA_SLEEP_TIME{100};

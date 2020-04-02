@@ -20,7 +20,9 @@ auto motor_controls::Motor::duty_cycle() const -> uint8_t
    return m_duty_cycle;
 }
 
-void motor_controls::Motor::actuate(Direction direction, uint8_t duty_cycle)
+void motor_controls::Motor::actuate(Direction direction,
+                                    uint8_t duty_cycle,
+                                    std::optional<std::chrono::milliseconds> time)
 {
    if (m_direction == Direction::FORWARD) {
       m_dir_pin.write(gpio::digital::Write::LOW);
@@ -63,6 +65,11 @@ void motor_controls::Motor::actuate(Direction direction, uint8_t duty_cycle)
          m_pwm_pin.duty_cycle(m_duty_cycle);
          gpio::sleep(DELTA_SLEEP_TIME);
       }
+   }
+
+   if (time) {
+      gpio::sleep(*time);
+      stop();
    }
 }
 

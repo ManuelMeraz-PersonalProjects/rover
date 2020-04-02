@@ -39,21 +39,11 @@ auto main() -> int
    gpio::sleep(1ms);
 
    constexpr uint8_t DUTY_CYCLE = 100;
-   left_motor.actuate(motor_controls::Direction::FORWARD, DUTY_CYCLE);
-   gpio::sleep(3s);
-   left_motor.stop();
+   left_motor.actuate(motor_controls::Direction::FORWARD, DUTY_CYCLE, 3s);
+   right_motor.actuate(motor_controls::Direction::FORWARD, DUTY_CYCLE, 3s);
 
-   right_motor.actuate(motor_controls::Direction::FORWARD, DUTY_CYCLE);
-   gpio::sleep(3s);
-   right_motor.stop();
-
-   left_motor.actuate(motor_controls::Direction::REVERSE, DUTY_CYCLE);
-   gpio::sleep(3s);
-   left_motor.stop();
-
-   right_motor.actuate(motor_controls::Direction::REVERSE, DUTY_CYCLE);
-   gpio::sleep(3s);
-   right_motor.stop();
+   left_motor.actuate(motor_controls::Direction::REVERSE, DUTY_CYCLE, 3s);
+   right_motor.actuate(motor_controls::Direction::REVERSE, DUTY_CYCLE, 3s);
 
    return 0;
 }
