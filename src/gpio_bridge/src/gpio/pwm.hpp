@@ -23,7 +23,7 @@ class Pin
    auto set_mode(Mode mode);
 
    [[nodiscard]] auto duty_cycle() const -> uint8_t;
-   void set_duty_cycle(uint8_t duty_cycle);
+   void duty_cycle(uint8_t duty_cycle);
 
  private:
    uint8_t m_pin_number{};

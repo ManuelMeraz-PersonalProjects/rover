@@ -1,4 +1,5 @@
 #include "gpio/gpio.hpp"
+#include "motor_controls/Motor.hpp"
 
 #include <chrono>
 #include <iostream>
@@ -6,23 +7,6 @@
 using namespace std::chrono_literals;
 namespace digital = gpio::digital;
 namespace pwm = gpio::pwm;
-
-void run_motors(pwm::Pin& pwm_pin, digital::Pin& dir_pin, digital::Write write_mode,
-                const uint8_t max_duty_cycle)
-{
-   dir_pin.write(write_mode);
-
-   constexpr int DUTY_CYCLE_DELTA = 10;
-   for (int duty_cycle = 0; duty_cycle <= max_duty_cycle; duty_cycle += DUTY_CYCLE_DELTA) {
-      pwm_pin.set_duty_cycle(duty_cycle);
-      gpio::sleep(100ms);
-   }
-
-   for (int duty_cycle = max_duty_cycle; duty_cycle >= 0; duty_cycle -= DUTY_CYCLE_DELTA) {
-      pwm_pin.set_duty_cycle(duty_cycle);
-      gpio::sleep(100ms);
-   }
-}
 
 auto main() -> int
 {
@@ -49,15 +33,28 @@ auto main() -> int
    constexpr int RANGE = 100;
    pwm::set_range(RANGE); // range is 2500 counts to give us half second.
 
+   motor_controls::Motor left_motor(dir2_pin, pwm2_pin);
+   motor_controls::Motor right_motor(dir1_pin, pwm1_pin);
+
    gpio::sleep(1ms);
 
    constexpr uint8_t DUTY_CYCLE = 100;
-   std::cout << "Running forward" << std::endl;
-   run_motors(pwm1_pin, dir1_pin, digital::Write::LOW, DUTY_CYCLE);
-   run_motors(pwm2_pin, dir2_pin, digital::Write::LOW, DUTY_CYCLE);
+   left_motor.actuate(motor_controls::Direction::FORWARD, DUTY_CYCLE);
+   std::cout << "holding speed" << std::endl;
+   gpio::sleep(3s);
+   left_motor.stop();
 
-   std::cout << "Running reverse" << std::endl;
-   run_motors(pwm1_pin, dir1_pin, digital::Write::HIGH, DUTY_CYCLE);
-   run_motors(pwm2_pin, dir2_pin, digital::Write::HIGH, DUTY_CYCLE);
+   right_motor.actuate(motor_controls::Direction::FORWARD, DUTY_CYCLE);
+   gpio::sleep(3s);
+   right_motor.stop();
+
+   left_motor.actuate(motor_controls::Direction::REVERSE, DUTY_CYCLE);
+   gpio::sleep(3s);
+   left_motor.stop();
+
+   right_motor.actuate(motor_controls::Direction::REVERSE, DUTY_CYCLE);
+   gpio::sleep(3s);
+   right_motor.stop();
+
    return 0;
 }

@@ -5,35 +5,31 @@
 #ifndef GPIO_BRIDGE_MOTOR_HPP
 #define GPIO_BRIDGE_MOTOR_HPP
 
+#include <gpio/gpio.hpp>
 namespace motor_controls {
 
-enum class Direction { FORWARD, BACKWARD };
-
-enum class Side { LEFT, RIGHT };
+enum class Direction { FORWARD, REVERSE };
 
 class Motor
 {
  public:
-   Motor(Side side);
+   explicit Motor(const gpio::digital::Pin& dir_pin, const gpio::pwm::Pin& pwm_pin);
+   ~Motor();
+
+   [[nodiscard]] auto direction() const -> Direction;
+   [[nodiscard]] auto duty_cycle() const -> uint8_t;
+
+   void stop();
+   void actuate(Direction direction, uint8_t duty_cycle);
 
  private:
-   /*
-    * Motor Controller | WiringPi | Physical Pin | Wire Color
-    * -------------------------------------------------------
-    * dir1             |21        | 31           | Blue
-    * pwm1             |23        | 35           | Green
-    * dir2             |22        | 33           | Yellow
-    * pwm2             |24        | 37           | Red
-    * gnd              | -        | 39           | Black
-    */
-   static constexpr int PWM1 =
-      23; // WiringPi Pin 23; Physical Pin 35;  Green Wire
-   static constexpr int DIR1 = 21; // WiringPi Pin 21; Physical Pin
+   static constexpr std::chrono::milliseconds SLEEP_TIME{100};
+   static constexpr uint8_t POWER_DELTA = 10;
 
-   static constexpr int PWM2 = 24;
-   static constexpr int DIR2 = 22;
-
-   Side m_side;
+   Direction m_direction;
+   uint8_t m_duty_cycle;
+   gpio::digital::Pin m_dir_pin;
+   gpio::pwm::Pin m_pwm_pin;
 };
 
 } // namespace motor_controls
