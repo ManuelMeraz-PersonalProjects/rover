@@ -23,8 +23,8 @@ class Motor
    void actuate(Direction direction, uint8_t duty_cycle);
 
  private:
-   static constexpr std::chrono::milliseconds SLEEP_TIME{100};
-   static constexpr uint8_t POWER_DELTA = 10;
+   static constexpr std::chrono::milliseconds DELTA_SLEEP_TIME{100};
+   static constexpr uint8_t DUTY_CYCLE_DELTA = 10;
 
    Direction m_direction;
    uint8_t m_duty_cycle;

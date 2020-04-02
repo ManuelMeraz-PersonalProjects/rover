@@ -41,27 +41,27 @@ void motor_controls::Motor::actuate(Direction direction, uint8_t duty_cycle)
 
    if (duty_cycle > m_duty_cycle) {
       while (m_duty_cycle < duty_cycle) {
-         if (duty_cycle - m_duty_cycle < POWER_DELTA) {
+         if (duty_cycle - m_duty_cycle < DUTY_CYCLE_DELTA) {
             m_duty_cycle = duty_cycle;
             m_pwm_pin.duty_cycle(m_duty_cycle);
             break;
          }
 
-         m_duty_cycle += POWER_DELTA;
+         m_duty_cycle += DUTY_CYCLE_DELTA;
          m_pwm_pin.duty_cycle(m_duty_cycle);
-         gpio::sleep(SLEEP_TIME);
+         gpio::sleep(DELTA_SLEEP_TIME);
       }
    } else if (duty_cycle < m_duty_cycle) {
       while (m_duty_cycle > duty_cycle) {
-         if (m_duty_cycle - duty_cycle < POWER_DELTA) {
+         if (m_duty_cycle - duty_cycle < DUTY_CYCLE_DELTA) {
             m_duty_cycle = duty_cycle;
             m_pwm_pin.duty_cycle(m_duty_cycle);
             break;
          }
 
-         m_duty_cycle -= POWER_DELTA;
+         m_duty_cycle -= DUTY_CYCLE_DELTA;
          m_pwm_pin.duty_cycle(m_duty_cycle);
-         gpio::sleep(SLEEP_TIME);
+         gpio::sleep(DELTA_SLEEP_TIME);
       }
    }
 }
@@ -69,13 +69,13 @@ void motor_controls::Motor::actuate(Direction direction, uint8_t duty_cycle)
 void motor_controls::Motor::stop()
 {
    while (m_duty_cycle > 0) {
-      if (m_duty_cycle < POWER_DELTA) {
+      if (m_duty_cycle < DUTY_CYCLE_DELTA) {
          m_pwm_pin.duty_cycle(0);
          break;
       }
 
-      m_duty_cycle -= POWER_DELTA;
+      m_duty_cycle -= DUTY_CYCLE_DELTA;
       m_pwm_pin.duty_cycle(m_duty_cycle);
-      gpio::sleep(SLEEP_TIME);
+      gpio::sleep(DELTA_SLEEP_TIME);
    }
 }

@@ -12,7 +12,7 @@
 #include <cstdint>
 namespace gpio {
 auto is_ready() -> bool;
-void set_pin_mode(uint8_t pin_number, uint8_t mode);
+void pin_mode(uint8_t pin_number, uint8_t mode);
 void sleep(std::chrono::milliseconds duration);
 } // namespace gpio
 

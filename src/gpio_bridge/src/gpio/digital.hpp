@@ -20,7 +20,7 @@ class Pin
    ~Pin();
 
    [[nodiscard]] auto mode() const -> Mode;
-   void set_mode(Mode mode);
+   void mode(Mode mode);
    void write(Write mode);
 
  private:

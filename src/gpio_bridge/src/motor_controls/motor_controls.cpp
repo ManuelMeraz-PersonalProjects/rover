@@ -28,10 +28,10 @@ auto main() -> int
    pwm::Pin pwm2_pin(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
 
    constexpr uint8_t CLOCK_HZ = 128;
-   pwm::set_clock(CLOCK_HZ);
+   pwm::clock(CLOCK_HZ);
 
    constexpr int RANGE = 100;
-   pwm::set_range(RANGE); // range is 2500 counts to give us half second.
+   pwm::range(RANGE); // range is 2500 counts to give us half second.
 
    motor_controls::Motor left_motor(dir2_pin, pwm2_pin);
    motor_controls::Motor right_motor(dir1_pin, pwm1_pin);
@@ -40,7 +40,6 @@ auto main() -> int
 
    constexpr uint8_t DUTY_CYCLE = 100;
    left_motor.actuate(motor_controls::Direction::FORWARD, DUTY_CYCLE);
-   std::cout << "holding speed" << std::endl;
    gpio::sleep(3s);
    left_motor.stop();
 

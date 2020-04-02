@@ -11,7 +11,7 @@ auto gpio::is_ready() -> bool
    return wiringPiSetup() != -1;
 }
 
-void gpio::set_pin_mode(uint8_t pin_number, uint8_t mode)
+void gpio::pin_mode(uint8_t pin_number, uint8_t mode)
 {
    pinMode(pin_number, static_cast<int>(mode));
 }
