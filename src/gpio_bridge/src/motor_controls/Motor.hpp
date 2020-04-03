@@ -38,13 +38,13 @@ class Motor
    /**
     * Setting this any lower than 40 causes motor faults when free spinning
     */
-   static constexpr std::chrono::milliseconds DELTA_SLEEP_TIME{80};
+   static constexpr std::chrono::milliseconds DELTA_SLEEP_TIME{100};
 
    /**
     * Setting this to anything greater 14 causes motors to fault when free
     * spinning with 50 ms sleep time
     */
-   static constexpr uint8_t DUTY_CYCLE_DELTA = 10;
+   static constexpr uint8_t DUTY_CYCLE_DELTA = 3;
 
    Direction m_direction;
    uint8_t m_duty_cycle;

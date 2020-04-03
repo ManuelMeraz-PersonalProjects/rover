@@ -11,8 +11,16 @@ namespace digital = gpio::digital;
 namespace pwm = gpio::pwm;
 
 namespace {
+struct MotorControllerDeleter
+{
+   void operator()(motor_controls::MotorController* controller) const
+   {
+      delete controller;
+   }
+};
+
 // globals
-motor_controls::MotorController* g_controller{nullptr};
+std::unique_ptr<motor_controls::MotorController, MotorControllerDeleter> g_controller{nullptr};
 
 constexpr int DIR1_WIRING_PI_PIN{21};
 constexpr int DIR2_WIRING_PI_PIN{22};
@@ -75,13 +83,8 @@ void motor_controls::MotorController::stop()
 auto motor_controls::MotorController::get() -> motor_controls::MotorController&
 {
    if (g_controller == nullptr) {
-      g_controller = new MotorController();
+      g_controller.reset(new motor_controls::MotorController());
    }
 
    return *g_controller;
-}
-
-motor_controls::MotorController::~MotorController()
-{
-   delete (g_controller);
 }

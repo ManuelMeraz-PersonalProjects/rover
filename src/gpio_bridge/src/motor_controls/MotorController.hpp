@@ -26,9 +26,7 @@ struct Command
 class MotorController
 {
  public:
-   using uPtr = std::unique_ptr<MotorController>;
-   using sPtr = std::shared_ptr<MotorController>;
-
+   ~MotorController() = default;
    MotorController(const MotorController&) = delete;
    MotorController(MotorController&&) = delete;
    auto operator=(const MotorController&) -> MotorController& = delete;
@@ -55,7 +53,6 @@ class MotorController
 
  private:
    MotorController();
-   ~MotorController();
 
    Motor::uPtr m_left_motor{};
    Motor::uPtr m_right_motor{};
