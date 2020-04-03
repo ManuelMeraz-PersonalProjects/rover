@@ -30,7 +30,7 @@ class Pin
    ~Pin();
 
    [[nodiscard]] auto mode() const -> Mode;
-   auto mode(Mode mode);
+   void mode(Mode mode);
 
    [[nodiscard]] auto duty_cycle() const -> uint8_t;
    void duty_cycle(uint8_t duty_cycle);

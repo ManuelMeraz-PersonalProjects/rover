@@ -1,6 +1,12 @@
 #include "Motor.hpp"
 
+#include <gpio/pwm.hpp>
 #include <utility>
+
+namespace {
+constexpr uint8_t CLOCK_HZ{128};
+constexpr int RANGE{100};
+} // namespace
 
 motor_controls::Motor::Motor(gpio::digital::Pin::uPtr dir_pin, gpio::pwm::Pin::uPtr pwm_pin) :
    m_direction(Direction::FORWARD),
@@ -32,13 +38,21 @@ void motor_controls::Motor::actuate(Direction direction,
 {
    if (direction != m_direction) {
       stop();
-      m_direction = direction;
 
+      m_pwm_pin->mode(gpio::pwm::Mode::OUTPUT);
+      gpio::pwm::clock(CLOCK_HZ);
+      gpio::pwm::range(RANGE);
+
+      m_direction = direction;
       if (m_direction == Direction::FORWARD) {
          m_dir_pin->write(gpio::digital::Write::LOW);
       } else if (m_direction == Direction::REVERSE) {
          m_dir_pin->write(gpio::digital::Write::HIGH);
       }
+   } else {
+      m_pwm_pin->mode(gpio::pwm::Mode::OUTPUT);
+      gpio::pwm::clock(CLOCK_HZ);
+      gpio::pwm::range(RANGE);
    }
 
    if (duty_cycle > m_duty_cycle) {
@@ -87,4 +101,6 @@ void motor_controls::Motor::stop()
       m_pwm_pin->duty_cycle(m_duty_cycle);
       gpio::sleep(DELTA_SLEEP_TIME);
    }
+
+   m_pwm_pin->mode(gpio::pwm::Mode::OFF);
 }

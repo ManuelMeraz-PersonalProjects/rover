@@ -18,9 +18,6 @@ constexpr int DIR1_WIRING_PI_PIN{21};
 constexpr int DIR2_WIRING_PI_PIN{22};
 constexpr int PWM1_WIRING_PI_PIN{23};
 constexpr int PWM2_WIRING_PI_PIN{24};
-
-constexpr uint8_t CLOCK_HZ{128};
-constexpr int RANGE{100};
 } // namespace
 
 motor_controls::MotorController::MotorController()
@@ -30,8 +27,6 @@ motor_controls::MotorController::MotorController()
    auto pwm1_pin = std::make_unique<pwm::Pin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
    auto pwm2_pin = std::make_unique<pwm::Pin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
 
-   pwm::clock(CLOCK_HZ);
-   pwm::range(RANGE);
 
    m_left_motor = std::make_unique<motor_controls::Motor>(std::move(dir2_pin), std::move(pwm2_pin));
    m_right_motor =

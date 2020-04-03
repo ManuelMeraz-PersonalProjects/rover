@@ -23,4 +23,6 @@ auto main() -> int
 
    command.direction = motor_controls::Direction::REVERSE;
    controller.actuate(command);
+
+   controller.stop();
 }
