@@ -5,6 +5,7 @@
 #ifndef GPIO_BRIDGE_PWM_HPP
 #define GPIO_BRIDGE_PWM_HPP
 #include <cstdint>
+#include <memory>
 
 namespace gpio::pwm {
 enum class Mode : int { OUTPUT = 4, SOFT_OUTPUT = 6, TONE_OUTPUTOFF = 8, OFF = 0 };
@@ -16,6 +17,15 @@ void range(uint16_t range);
 class Pin
 {
  public:
+   using uPtr = std::unique_ptr<Pin>;
+   using sPtr = std::shared_ptr<Pin>;
+
+   Pin() = delete;
+   Pin(const Pin&) = delete;
+   Pin(Pin&&) = delete;
+   auto operator=(const Pin&) -> Pin& = delete;
+   auto operator=(Pin &&) -> Pin& = delete;
+
    explicit Pin(uint8_t pin_number, Mode mode = Mode::OUTPUT);
    ~Pin();
 
