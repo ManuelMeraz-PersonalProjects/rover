@@ -44,7 +44,7 @@ class Motor
     * Setting this to anything greater 14 causes motors to fault when free
     * spinning with 50 ms sleep time
     */
-   static constexpr uint8_t DUTY_CYCLE_DELTA = 3;
+   static constexpr uint8_t DUTY_CYCLE_DELTA = 4;
 
    Direction m_direction;
    uint8_t m_duty_cycle;
