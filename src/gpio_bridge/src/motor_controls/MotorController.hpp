@@ -27,13 +27,15 @@ struct Command
 class MotorController
 {
  public:
-   MotorController();
-   ~MotorController() = default;
+   using uPtr = std::unique_ptr<MotorController>;
+   using sPtr = std::shared_ptr<MotorController>;
 
    MotorController(const MotorController&) = delete;
    MotorController(MotorController&&) = delete;
    auto operator=(const MotorController&) -> MotorController& = delete;
    auto operator=(MotorController &&) -> MotorController& = delete;
+
+   static auto get() -> MotorController&;
 
    /**
     * \brief Apply same command to both motors.
@@ -53,8 +55,11 @@ class MotorController
    void stop();
 
  private:
-   Motor::sPtr m_left_motor{};
-   Motor::sPtr m_right_motor{};
+   MotorController();
+   ~MotorController();
+
+   Motor::uPtr m_left_motor{};
+   Motor::uPtr m_right_motor{};
 };
 } // namespace motor_controls
 #endif // GPIO_BRIDGE_MOTORCONTROLLER_HPP

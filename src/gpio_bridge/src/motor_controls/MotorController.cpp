@@ -11,27 +11,31 @@ namespace digital = gpio::digital;
 namespace pwm = gpio::pwm;
 
 namespace {
-constexpr int DIR1_WIRING_PI_PIN = 21;
-constexpr int DIR2_WIRING_PI_PIN = 22;
-constexpr int PWM1_WIRING_PI_PIN = 23;
-constexpr int PWM2_WIRING_PI_PIN = 24;
+// globals
+motor_controls::MotorController* g_controller{nullptr};
 
-constexpr uint8_t CLOCK_HZ = 128;
-constexpr int RANGE = 100;
+constexpr int DIR1_WIRING_PI_PIN{21};
+constexpr int DIR2_WIRING_PI_PIN{22};
+constexpr int PWM1_WIRING_PI_PIN{23};
+constexpr int PWM2_WIRING_PI_PIN{24};
+
+constexpr uint8_t CLOCK_HZ{128};
+constexpr int RANGE{100};
 } // namespace
 
 motor_controls::MotorController::MotorController()
 {
-   auto dir1_pin = std::make_shared<digital::Pin>(DIR1_WIRING_PI_PIN, digital::Mode::OUTPUT);
-   auto dir2_pin = std::make_shared<digital::Pin>(DIR2_WIRING_PI_PIN, digital::Mode::OUTPUT);
-   auto pwm1_pin = std::make_shared<pwm::Pin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
-   auto pwm2_pin = std::make_shared<pwm::Pin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
+   auto dir1_pin = std::make_unique<digital::Pin>(DIR1_WIRING_PI_PIN, digital::Mode::OUTPUT);
+   auto dir2_pin = std::make_unique<digital::Pin>(DIR2_WIRING_PI_PIN, digital::Mode::OUTPUT);
+   auto pwm1_pin = std::make_unique<pwm::Pin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
+   auto pwm2_pin = std::make_unique<pwm::Pin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
 
    pwm::clock(CLOCK_HZ);
    pwm::range(RANGE);
 
-   m_left_motor = std::make_shared<motor_controls::Motor>(dir2_pin, pwm2_pin);
-   m_right_motor = std::make_shared<motor_controls::Motor>(dir1_pin, pwm1_pin);
+   m_left_motor = std::make_unique<motor_controls::Motor>(std::move(dir2_pin), std::move(pwm2_pin));
+   m_right_motor =
+      std::make_unique<motor_controls::Motor>(std::move(dir1_pin), std::move(pwm1_pin));
 }
 
 void motor_controls::MotorController::actuate(const motor_controls::Command& both_command)
@@ -45,11 +49,11 @@ void motor_controls::MotorController::actuate(const motor_controls::Command& lef
                                               const motor_controls::Command& right_command)
 
 {
-   const auto actuate_left_motor = [this](const motor_controls::Command command) {
+   const auto actuate_left_motor = [this](const motor_controls::Command& command) {
       m_left_motor->actuate(command.direction, command.duty_cycle, command.time);
    };
 
-   const auto actuate_right_motor = [this](const motor_controls::Command command) {
+   const auto actuate_right_motor = [this](const motor_controls::Command& command) {
       m_right_motor->actuate(command.direction, command.duty_cycle, command.time);
    };
 
@@ -71,4 +75,18 @@ void motor_controls::MotorController::stop()
 
    stop_left.join();
    stop_right.join();
+}
+
+auto motor_controls::MotorController::get() -> motor_controls::MotorController&
+{
+   if (g_controller == nullptr) {
+      g_controller = new MotorController();
+   }
+
+   return *g_controller;
+}
+
+motor_controls::MotorController::~MotorController()
+{
+   delete (g_controller);
 }

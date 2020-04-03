@@ -2,7 +2,7 @@
 
 #include <utility>
 
-motor_controls::Motor::Motor(gpio::digital::Pin::sPtr dir_pin, gpio::pwm::Pin::sPtr pwm_pin) :
+motor_controls::Motor::Motor(gpio::digital::Pin::uPtr dir_pin, gpio::pwm::Pin::uPtr pwm_pin) :
    m_direction(Direction::FORWARD),
    m_duty_cycle(0),
    m_dir_pin(std::move(dir_pin)),

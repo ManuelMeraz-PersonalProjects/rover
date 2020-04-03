@@ -24,7 +24,7 @@ class Motor
    auto operator=(const Motor&) -> Motor& = delete;
    auto operator=(Motor &&) -> Motor& = delete;
 
-   explicit Motor(gpio::digital::Pin::sPtr dir_pin, gpio::pwm::Pin::sPtr pwm_pin);
+   explicit Motor(gpio::digital::Pin::uPtr dir_pin, gpio::pwm::Pin::uPtr pwm_pin);
    ~Motor();
 
    [[nodiscard]] auto direction() const -> Direction;
@@ -49,8 +49,8 @@ class Motor
 
    Direction m_direction;
    uint8_t m_duty_cycle;
-   gpio::digital::Pin::sPtr m_dir_pin;
-   gpio::pwm::Pin::sPtr m_pwm_pin;
+   gpio::digital::Pin::uPtr m_dir_pin;
+   gpio::pwm::Pin::uPtr m_pwm_pin;
 };
 
 } // namespace motor_controls

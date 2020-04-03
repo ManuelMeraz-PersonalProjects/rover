@@ -15,7 +15,7 @@ auto main() -> int
       return 1;
    }
 
-   motor_controls::MotorController controller;
+   auto& controller = motor_controls::MotorController::get();
 
    constexpr uint8_t DUTY_CYCLE = 100;
    motor_controls::Command command{motor_controls::Direction::FORWARD, DUTY_CYCLE, 3s};
