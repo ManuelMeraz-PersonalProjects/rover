@@ -36,7 +36,8 @@ class Motor
                 std::optional<std::chrono::milliseconds> time = std::nullopt);
 
  private:
-   static constexpr std::chrono::milliseconds DELTA_SLEEP_TIME{100};
+   // Setting this any lower than 40 causes motor faults when free spinning
+   static constexpr std::chrono::milliseconds DELTA_SLEEP_TIME{50};
    static constexpr uint8_t DUTY_CYCLE_DELTA = 10;
 
    Direction m_direction;
