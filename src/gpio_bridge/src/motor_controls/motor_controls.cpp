@@ -18,22 +18,11 @@ auto main() -> int
    motor_controls::MotorController controller;
 
    constexpr uint8_t DUTY_CYCLE = 100;
+   motor_controls::Command command{motor_controls::Direction::FORWARD, DUTY_CYCLE};
+   controller.actuate(command);
 
-   const auto move_left_motor = [&controller](motor_controls::Direction direction,
-                                              std::chrono::milliseconds time) {
-      controller.left().actuate(direction, DUTY_CYCLE, time);
-   };
+   command.direction = motor_controls::Direction::REVERSE;
+   controller.actuate(command);
 
-   const auto move_right_motor = [&controller](motor_controls::Direction direction,
-                                               std::chrono::milliseconds time) {
-      controller.right().actuate(direction, DUTY_CYCLE, time);
-   };
-
-   std::thread move_left(move_left_motor, motor_controls::Direction::FORWARD, 3s);
-   std::thread move_right(move_right_motor, motor_controls::Direction::FORWARD, 3s);
-
-   move_left.join();
-   move_right.join();
-
-   return 0;
+   controller.stop();
 }

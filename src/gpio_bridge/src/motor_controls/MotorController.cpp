@@ -4,6 +4,8 @@
 
 #include "MotorController.hpp"
 
+#include <thread>
+
 using namespace std::chrono_literals;
 namespace digital = gpio::digital;
 namespace pwm = gpio::pwm;
@@ -32,12 +34,41 @@ motor_controls::MotorController::MotorController()
    m_right_motor = std::make_shared<motor_controls::Motor>(dir1_pin, pwm1_pin);
 }
 
-auto motor_controls::MotorController::left() -> motor_controls::Motor&
+void motor_controls::MotorController::actuate(const motor_controls::Command& both_command)
 {
-   return *m_left_motor;
+   const auto& left_command = both_command;
+   const auto& right_command = both_command;
+   actuate(left_command, right_command);
 }
 
-auto motor_controls::MotorController::right() -> motor_controls::Motor&
+void motor_controls::MotorController::actuate(const motor_controls::Command& left_command,
+                                              const motor_controls::Command& right_command)
+
 {
-   return *m_right_motor;
+   const auto actuate_left_motor = [this](const motor_controls::Command command) {
+      m_left_motor->actuate(command.direction, command.duty_cycle, command.time);
+   };
+
+   const auto actuate_right_motor = [this](const motor_controls::Command command) {
+      m_right_motor->actuate(command.direction, command.duty_cycle, command.time);
+   };
+
+   std::thread move_left(actuate_left_motor, left_command);
+   std::thread move_right(actuate_right_motor, right_command);
+
+   move_left.join();
+   move_right.join();
+}
+
+void motor_controls::MotorController::stop()
+{
+   const auto stop_left_motor = [this]() { m_left_motor->stop(); };
+
+   const auto stop_right_motor = [this]() { m_right_motor->stop(); };
+
+   std::thread stop_left(stop_left_motor);
+   std::thread stop_right(stop_right_motor);
+
+   stop_left.join();
+   stop_right.join();
 }

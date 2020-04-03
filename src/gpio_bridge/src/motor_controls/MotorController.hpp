@@ -16,13 +16,41 @@
  * gnd              | -        | 39           | Black
  */
 namespace motor_controls {
+
+struct Command
+{
+   Direction direction{Direction::FORWARD};
+   uint8_t duty_cycle{0};
+   std::optional<std::chrono::milliseconds> time{std::nullopt};
+};
+
 class MotorController
 {
  public:
    MotorController();
+   ~MotorController() = default;
 
-   auto left() -> Motor&;
-   auto right() -> Motor&;
+   MotorController(const MotorController&) = delete;
+   MotorController(MotorController&&) = delete;
+   auto operator=(const MotorController&) -> MotorController& = delete;
+   auto operator=(MotorController &&) -> MotorController& = delete;
+
+   /**
+    * \brief Apply same command to both motors.
+    * \param both_command Command containing command for both motors.
+    */
+   void actuate(const Command& both_command);
+
+   /**
+    * \brief Apply individual command to each motor
+    * \param both Command containing command for each motor
+    */
+   void actuate(const Command& left_command, const Command& right_command);
+
+   /**
+    * \brief Stop both motors.
+    */
+   void stop();
 
  private:
    Motor::sPtr m_left_motor{};
