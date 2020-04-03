@@ -1,5 +1,5 @@
 #include "gpio/gpio.hpp"
-#include "motor_controls/MotorController.hpp"
+#include "motor_controls/motor_controls.hpp"
 
 #include <chrono>
 #include <iostream>

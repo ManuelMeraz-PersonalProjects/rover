@@ -16,7 +16,6 @@
  * gnd              | -        | 39           | Black
  */
 namespace motor_controls {
-
 struct Command
 {
    Direction direction{Direction::FORWARD};

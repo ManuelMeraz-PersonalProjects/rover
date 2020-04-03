@@ -9,7 +9,6 @@
 
 #include <optional>
 namespace motor_controls {
-
 enum class Direction { FORWARD, REVERSE };
 
 class Motor
