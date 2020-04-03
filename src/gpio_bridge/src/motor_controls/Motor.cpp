@@ -8,6 +8,7 @@ motor_controls::Motor::Motor(gpio::digital::Pin::sPtr dir_pin, gpio::pwm::Pin::s
    m_dir_pin(std::move(dir_pin)),
    m_pwm_pin(std::move(pwm_pin))
 {
+   m_dir_pin->write(gpio::digital::Write::LOW);
    stop();
 }
 
@@ -29,12 +30,6 @@ void motor_controls::Motor::actuate(Direction direction,
                                     uint8_t duty_cycle,
                                     std::optional<std::chrono::milliseconds> time)
 {
-   if (m_direction == Direction::FORWARD) {
-      m_dir_pin->write(gpio::digital::Write::LOW);
-   } else if (m_direction == Direction::REVERSE) {
-      m_dir_pin->write(gpio::digital::Write::HIGH);
-   }
-
    if (direction != m_direction) {
       stop();
       m_direction = direction;
@@ -75,6 +70,8 @@ void motor_controls::Motor::actuate(Direction direction,
    if (time) {
       gpio::sleep(*time);
       stop();
+   } else {
+      gpio::sleep(DELTA_SLEEP_TIME);
    }
 }
 
