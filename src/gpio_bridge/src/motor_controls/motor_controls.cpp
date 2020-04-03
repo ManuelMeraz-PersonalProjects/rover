@@ -17,10 +17,17 @@ auto main() -> int
    motor_controls::MotorController controller;
 
    constexpr uint8_t DUTY_CYCLE = 100;
-   controller.left().actuate(motor_controls::Direction::FORWARD, DUTY_CYCLE, 3s);
-   controller.right().actuate(motor_controls::Direction::FORWARD, DUTY_CYCLE, 3s);
 
-   controller.left().actuate(motor_controls::Direction::REVERSE, DUTY_CYCLE, 3s);
-   controller.right().actuate(motor_controls::Direction::REVERSE, DUTY_CYCLE, 3s);
+   const auto move_motors = [&controller, &DUTY_CYCLE](auto direction, auto time) {
+      controller.left().actuate(direction, DUTY_CYCLE);
+      controller.right().actuate(direction, DUTY_CYCLE);
+      gpio::sleep(time);
+      controller.left().stop();
+      controller.right().stop();
+   };
+
+   move_motors(motor_controls::Direction::FORWARD, 3s);
+   move_motors(motor_controls::Direction::REVERSE, 3s);
+
    return 0;
 }
