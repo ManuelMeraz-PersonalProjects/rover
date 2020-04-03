@@ -14,10 +14,9 @@ if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif ()
 
 # set thirdparty_libraries
-include(thirdparty/FindThirdParty.cmake)
-add_subdirectory(src)
+#include(thirdparty/FindThirdParty.cmake)
 
 if (BUILD_TESTING)
     enable_testing()
-    add_subdirectory(tests)
+    #add_subdirectory(tests)
 endif ()
