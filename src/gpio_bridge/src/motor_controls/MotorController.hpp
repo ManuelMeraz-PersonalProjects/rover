@@ -21,6 +21,10 @@ class MotorController
  public:
    MotorController();
 
+   auto left() -> Motor&;
+   auto right() -> Motor&;
+
+ private:
    Motor::sPtr m_left_motor{};
    Motor::sPtr m_right_motor{};
 };
