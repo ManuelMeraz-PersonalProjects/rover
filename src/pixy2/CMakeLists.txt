@@ -14,7 +14,7 @@ if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif ()
 
 # set thirdparty_libraries
-#include(thirdparty/FindThirdParty.cmake)
+include(thirdparty/FindThirdParty.cmake)
 
 if (BUILD_TESTING)
     enable_testing()

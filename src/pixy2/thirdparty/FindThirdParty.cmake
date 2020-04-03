@@ -1,3 +1,10 @@
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/modules)
+
 find_package(Pixy2 REQUIRED)
+# LIBUSB_1_INCLUDE_DIRS LIBUSB_1_LIBRARIES
+find_package(LibUSB REQUIRED)
+
+add_library(pixy2 STATIC IMPORTED)
+target_link_libraries(pixy2 INTERFACE ${LIBUSB_1_LIBRARIES} ${LIBPIXY2_LIBRARIES})
+target_include_directories(pixy2 INTERFACE ${LIBUSB_1_INCLUDE_DIRS} ${LIBPIXY2_INCLUDE_DIRS})
 
