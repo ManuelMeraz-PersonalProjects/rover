@@ -1,10 +1,8 @@
-#include "MotorController.hpp"
 #include "gpio/gpio.hpp"
-#include "motor_controls/Motor.hpp"
+#include "motor_controls/MotorController.hpp"
 
 #include <chrono>
 #include <iostream>
-#include <thread>
 
 using namespace std::chrono_literals;
 
