@@ -1,0 +1,2 @@
+add_executable(chirp_command_cpp_demo chirp_command_cpp_demo.cpp)
+target_link_libraries(chirp_command_cpp_demo PRIVATE pixy2)

@@ -15,6 +15,7 @@ endif ()
 
 # set thirdparty_libraries
 include(thirdparty/FindThirdParty.cmake)
+add_subdirectory(src)
 
 if (BUILD_TESTING)
     enable_testing()
