@@ -1,3 +1,3 @@
 add_executable(test_motor_controls test_motor_controls.cpp)
 add_test(NAME test_motor_controls COMMAND test_motor_controls)
-target_link_libraries(test_motor_controls PRIVATE libodroidgpio gpio_bridge::motor_controls)
+target_link_libraries(test_motor_controls PRIVATE gpio_bridge::motor_controls libodroidgpio)

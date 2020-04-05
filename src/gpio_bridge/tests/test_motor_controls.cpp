@@ -1,8 +1,8 @@
-#include "gpio/gpio.hpp"
 #include "motor_controls/motor_controls.hpp"
 
 #include <chrono>
 #include <iostream>
+#include <odroid/gpio.hpp>
 
 using namespace std::chrono_literals;
 
