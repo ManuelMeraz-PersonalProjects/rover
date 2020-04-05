@@ -5,7 +5,7 @@
 #ifndef GPIO_BRIDGE_MOTOR_HPP
 #define GPIO_BRIDGE_MOTOR_HPP
 
-#include "gpio/gpio.hpp"
+#include "odroid/gpio.hpp"
 
 #include <optional>
 namespace motor_controls {

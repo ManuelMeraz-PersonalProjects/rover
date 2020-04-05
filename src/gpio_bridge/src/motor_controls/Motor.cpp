@@ -1,6 +1,6 @@
 #include "Motor.hpp"
 
-#include <gpio/pwm.hpp>
+#include <odroid/pwm.hpp>
 #include <utility>
 
 namespace {
