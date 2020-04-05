@@ -1,7 +1,3 @@
-//
-// Created by manny on 4/2/20.
-//
-
 #include "MotorController.hpp"
 
 #include <thread>
@@ -30,15 +26,13 @@ constexpr int PWM2_WIRING_PI_PIN{24};
 
 motor_controls::MotorController::MotorController()
 {
-   auto dir1_pin = std::make_unique<digital::Pin>(DIR1_WIRING_PI_PIN, digital::Mode::OUTPUT);
-   auto dir2_pin = std::make_unique<digital::Pin>(DIR2_WIRING_PI_PIN, digital::Mode::OUTPUT);
-   auto pwm1_pin = std::make_unique<pwm::Pin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
-   auto pwm2_pin = std::make_unique<pwm::Pin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
+   auto& dir1_pin = gpio::get<digital::DigitalPin>(DIR1_WIRING_PI_PIN, digital::Mode::OUTPUT);
+   auto& dir2_pin = gpio::get<digital::DigitalPin>(DIR2_WIRING_PI_PIN, digital::Mode::OUTPUT);
+   auto& pwm1_pin = gpio::get<pwm::PWMPin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
+   auto& pwm2_pin = gpio::get<pwm::PWMPin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
 
-
-   m_left_motor = std::make_unique<motor_controls::Motor>(std::move(dir2_pin), std::move(pwm2_pin));
-   m_right_motor =
-      std::make_unique<motor_controls::Motor>(std::move(dir1_pin), std::move(pwm1_pin));
+   m_left_motor = std::make_unique<motor_controls::Motor>(dir2_pin, pwm2_pin);
+   m_right_motor = std::make_unique<motor_controls::Motor>(dir1_pin, pwm1_pin);
 }
 
 void motor_controls::MotorController::actuate(const motor_controls::Command& both_command)

@@ -5,9 +5,11 @@
 #ifndef GPIO_BRIDGE_MOTOR_HPP
 #define GPIO_BRIDGE_MOTOR_HPP
 
-#include "odroid/gpio.hpp"
-
+#include <chrono>
+#include <memory>
+#include <odroid/gpio.hpp>
 #include <optional>
+
 namespace motor_controls {
 enum class Direction { FORWARD, REVERSE };
 
@@ -23,7 +25,7 @@ class Motor
    auto operator=(const Motor&) -> Motor& = delete;
    auto operator=(Motor &&) -> Motor& = delete;
 
-   explicit Motor(gpio::digital::Pin::uPtr dir_pin, gpio::pwm::Pin::uPtr pwm_pin);
+   explicit Motor(gpio::digital::DigitalPin& dir_pin, gpio::pwm::PWMPin& pwm_pin);
    ~Motor();
 
    [[nodiscard]] auto direction() const -> Direction;
@@ -48,8 +50,8 @@ class Motor
 
    Direction m_direction;
    uint8_t m_duty_cycle;
-   gpio::digital::Pin::uPtr m_dir_pin;
-   gpio::pwm::Pin::uPtr m_pwm_pin;
+   gpio::digital::DigitalPin& m_dir_pin;
+   gpio::pwm::PWMPin& m_pwm_pin;
 };
 
 } // namespace motor_controls

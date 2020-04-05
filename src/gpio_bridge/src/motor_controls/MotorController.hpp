@@ -6,6 +6,8 @@
 #define GPIO_BRIDGE_MOTORCONTROLLER_HPP
 
 #include "Motor.hpp"
+
+#include <chrono>
 /*
  * Motor Controller | WiringPi | Physical Pin | Wire Color
  * -------------------------------------------------------
