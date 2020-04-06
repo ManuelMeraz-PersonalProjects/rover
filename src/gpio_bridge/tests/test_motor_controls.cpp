@@ -8,8 +8,8 @@ using namespace std::chrono_literals;
 
 auto main() -> int
 {
-   if (!gpio::is_ready()) {
-      std::cout << "Setup wiringPi Failed!\n";
+   if (!gpio::setup()) {
+      std::cout << "Setup Odroid GPIO Failed!" << std::endl;
       return 1;
    }
 

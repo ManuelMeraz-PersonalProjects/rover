@@ -10,7 +10,7 @@ constexpr int RANGE{100};
 motor_controls::Motor::Motor(gpio::digital::DigitalPin& dir_pin, gpio::pwm::PWMPin& pwm_pin) :
    m_direction(Direction::FORWARD), m_duty_cycle(0), m_dir_pin(dir_pin), m_pwm_pin(pwm_pin)
 {
-   m_dir_pin.write(gpio::digital::Write::LOW);
+   m_dir_pin.write(gpio::digital::IO::LOW);
    stop();
 }
 
@@ -41,9 +41,9 @@ void motor_controls::Motor::actuate(Direction direction,
 
       m_direction = direction;
       if (m_direction == Direction::FORWARD) {
-         m_dir_pin.write(gpio::digital::Write::LOW);
+         m_dir_pin.write(gpio::digital::IO::LOW);
       } else if (m_direction == Direction::REVERSE) {
-         m_dir_pin.write(gpio::digital::Write::HIGH);
+         m_dir_pin.write(gpio::digital::IO::HIGH);
       }
    } else {
       m_pwm_pin.mode(gpio::pwm::Mode::OUTPUT);
