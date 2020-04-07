@@ -1,4 +1,4 @@
-list(APPEND demos
+list(APPEND examples
         chirp_command_cpp_demo
         get_blocks_cpp_demo
         get_lines_cpp_demo
@@ -6,7 +6,7 @@ list(APPEND demos
         get_rgb_demo
         pan_tilt_demo)
 
-foreach (demo IN LISTS demos)
+foreach(demo IN LISTS examples)
     add_executable(${demo} ${demo}.cpp)
     target_link_libraries(${demo} PRIVATE pixy2)
-endforeach ()
+endforeach()

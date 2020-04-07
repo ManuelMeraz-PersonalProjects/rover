@@ -1,4 +1,4 @@
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/modules)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/thirdparty/modules)
 
 find_package(LibUSB REQUIRED)
 add_Library(usb1 STATIC IMPORTED)
