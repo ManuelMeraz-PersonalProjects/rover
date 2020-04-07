@@ -5,10 +5,10 @@ target_link_libraries(motor_controls PRIVATE libodroidgpio Threads::Threads)
 target_include_directories(motor_controls
         PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/>
-        $<INSTALL_INTERFACE:include/GPIOBridge>)
+        $<INSTALL_INTERFACE:include/GPIO_BRIDGE>)
 
 install(TARGETS motor_controls
-        EXPORT GPIOBridgeTargets
+        EXPORT gpio-bridge-targets
         RUNTIME DESTINATION "${INSTALL_BIN_DIR}" COMPONENT bin
         LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT shlib
         PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}"
