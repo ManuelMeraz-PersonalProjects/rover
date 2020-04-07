@@ -1,4 +1,4 @@
-#include "Motor.hpp"
+#include "motor_controls/Motor.hpp"
 
 #include <odroid/gpio.hpp>
 
