@@ -8,5 +8,5 @@ list(APPEND examples
 
 foreach(demo IN LISTS examples)
     add_executable(${demo} ${demo}.cpp)
-    target_link_libraries(${demo} PRIVATE pixy2)
+    target_link_libraries(${demo} PRIVATE libpixy2 libusb1)
 endforeach()
