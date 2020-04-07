@@ -1,3 +1,17 @@
+# Offer the user the choice of overriding the installation directories
+set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
+set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
+set(INSTALL_INCLUDE_DIR include/GPIOBridge CACHE PATH "Installation directory for header files")
+set(INSTALL_CMAKE_DIR lib/cmake/GPIOBridge CACHE PATH "Installation directory for CMake files")
+
+# Make relative paths absolute (needed later on)
+foreach(directory LIB BIN INCLUDE CMAKE)
+    set(var INSTALL_${directory}_DIR)
+    if(NOT IS_ABSOLUTE "${${var}}")
+        set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
+    endif()
+endforeach()
+
 # creates compile_commands.json database for linters
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -22,6 +36,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 endif()
+
+configure_file(cmake/config.h.in "${CMAKE_CURRENT_BINARY_DIR}/config.h" @ONLY)
 
 # Set up third party
 include(cmake/thirdparty/SetupThirdParty.cmake)
