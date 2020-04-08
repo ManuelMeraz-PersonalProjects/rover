@@ -7,6 +7,8 @@ add_subdirectory(src)
 
 if(BUILD_TESTING)
     include(CTest)
+    find_package(ament_lint_auto REQUIRED)
+    ament_lint_auto_find_test_dependencies()
     add_subdirectory(tests)
 endif()
 
@@ -41,3 +43,5 @@ install(DIRECTORY include/ DESTINATION ${INSTALL_INCLUDE_DIR})
 install(EXPORT gpio-bridge-targets
         DESTINATION "${INSTALL_CMAKE_DIR}"
         COMPONENT dev)
+
+ament_package()
