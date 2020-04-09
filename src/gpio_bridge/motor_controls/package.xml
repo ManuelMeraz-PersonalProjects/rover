@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>gpio_bridge</name>
+  <name>motor_controls</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
   <maintainer email="meraz.manuel@gmail.com">manny</maintainer>
@@ -14,11 +14,9 @@
 
   <build_depend>OdroidGPIO</build_depend>
   <build_depend>Threads</build_depend>
-  <build_depend>motor_controls</build_depend>
 
   <exec_depend>OdroidGPIO</exec_depend>
   <exec_depend>Threads</exec_depend>
-  <exec_depend>motor_controls</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
