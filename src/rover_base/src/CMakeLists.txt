@@ -1,4 +1,4 @@
-list(APPEND nodes rover_node talker)
+list(APPEND nodes rover_node talker listener)
 
 foreach(node IN LISTS nodes)
     add_executable(${node} ${node}.cpp)
