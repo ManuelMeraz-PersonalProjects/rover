@@ -29,6 +29,16 @@ find_package(ament_cmake REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OdroidGPIO REQUIRED)
 
+find_package(controller_interface REQUIRED)
+add_library(controller_interface INTERFACE)
+target_link_libraries(controller_interface INTERFACE ${controller_interface_LIBRARIES})
+target_include_directories(controller_interface INTERFACE ${controller_interface_INCLUDE_DIRS})
+
+find_package(rclcpp REQUIRED)
+add_library(rclcpp INTERFACE)
+target_link_libraries(rclcpp INTERFACE ${rclcpp_LIBRARIES})
+target_include_directories(rclcpp INTERFACE ${rclcpp_INCLUDE_DIRS})
+
 add_library(motor_controls
         SHARED
         src/Motor.cpp
@@ -37,7 +47,10 @@ add_library(motor_controls
 target_link_libraries(motor_controls
         PUBLIC
         odroidgpio
-        Threads::Threads)
+        Threads::Threads
+        PRIVATE
+        controller_interface
+        rclcpp)
 
 target_include_directories(motor_controls
         PUBLIC

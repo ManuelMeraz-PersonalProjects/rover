@@ -27,12 +27,13 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(controller_interface REQUIRED)
 
 list(APPEND nodes rover_node talker listener)
 
 foreach(node IN LISTS nodes)
     add_executable(${node} src/${node}.cpp)
-    ament_target_dependencies(${node} rclcpp std_msgs)
+    ament_target_dependencies(${node} rclcpp std_msgs controller_interface)
     target_include_directories(${node} PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
             $<INSTALL_INTERFACE:include>)
