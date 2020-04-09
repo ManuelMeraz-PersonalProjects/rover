@@ -1,13 +1,10 @@
-//
-// Created by manny on 4/2/20.
-//
-
 #ifndef GPIO_BRIDGE_MOTORCONTROLLER_HPP
 #define GPIO_BRIDGE_MOTORCONTROLLER_HPP
 
 #include "Motor.hpp"
 
 #include <chrono>
+#include <controller_interface/controller_interface.hpp>
 /*
  * Motor Controller | WiringPi | Physical Pin | Wire Color
  * -------------------------------------------------------

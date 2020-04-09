@@ -48,7 +48,6 @@ target_link_libraries(motor_controls
         PUBLIC
         odroidgpio
         Threads::Threads
-        PRIVATE
         controller_interface
         rclcpp)
 
@@ -57,12 +56,21 @@ target_include_directories(motor_controls
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-ament_export_interfaces(export_motor_controls HAS_LIBRARY_TARGET)
 ament_export_dependencies(OdroidGPIO)
 ament_export_dependencies(Threads)
+ament_export_dependencies(rclcpp)
+ament_export_dependencies(controller_interface)
+ament_export_interfaces(export_motor_controls HAS_LIBRARY_TARGET)
 
 install(DIRECTORY include/
         DESTINATION include)
+
+# need to export rclcpp and controller_interface for some reason
+install(TARGETS rclcpp
+        EXPORT export_motor_controls)
+
+install(TARGETS controller_interface
+        EXPORT export_motor_controls)
 
 install(TARGETS motor_controls
         EXPORT export_motor_controls

@@ -14,9 +14,13 @@
 
   <build_depend>OdroidGPIO</build_depend>
   <build_depend>Threads</build_depend>
+  <build_depend>rclcpp</build_depend>
+  <build_depend>controller_interface</build_depend>
 
   <exec_depend>OdroidGPIO</exec_depend>
   <exec_depend>Threads</exec_depend>
+  <exec_depend>rclcpp</exec_depend>
+  <exec_depend>controller_interface</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

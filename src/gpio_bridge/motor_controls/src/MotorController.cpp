@@ -1,6 +1,5 @@
 #include "motor_controls/MotorController.hpp"
 
-#include <controller_interface/controller_interface.hpp>
 #include <thread>
 
 using namespace std::chrono_literals;
