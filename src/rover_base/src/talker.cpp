@@ -14,7 +14,6 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
-#include "gpio_bridge/motor_controls/motor_controls.hpp"
 
 #include <chrono>
 #include <memory>
