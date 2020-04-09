@@ -11,12 +11,13 @@
 /*
  * Motor Controller | WiringPi | Physical Pin | Wire Color
  * -------------------------------------------------------
- * dir1             |21        | 31           | Blue
- * pwm1             |23        | 35           | Green
- * dir2             |22        | 33           | Yellow
- * pwm2             |24        | 37           | Red
+ * dir1             |21        | 29           | Blue
+ * dir2             |22        | 31           | Yellow
+ * pwm1             |23        | 33           | Green
+ * pwm2             |24        | 35           | Red
  * gnd              | -        | 39           | Black
  */
+
 namespace motor_controls {
 struct Command
 {
