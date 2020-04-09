@@ -39,3 +39,6 @@
 
 # ignore install directory from colcon
 *install*
+
+# ros2 log
+log/
