@@ -14,5 +14,4 @@ if(BUILD_TESTING)
 endif()
 
 include(cmake/SetupInstall.cmake)
-
 ament_package()

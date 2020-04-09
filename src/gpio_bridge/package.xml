@@ -12,6 +12,14 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
+  <build_depend>OdroidGPIO</build_depend>
+  <build_depend>Threads</build_depend>
+  <build_depend>motor_controls</build_depend>
+
+  <exec_depend>OdroidGPIO</exec_depend>
+  <exec_depend>Threads</exec_depend>
+  <exec_depend>motor_controls</exec_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

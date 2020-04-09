@@ -14,6 +14,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
+#include "gpio_bridge/motor_controls/motor_controls.hpp"
 
 #include <chrono>
 #include <memory>
@@ -40,6 +41,7 @@ class MinimalPublisher : public rclcpp::Node
       RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
       publisher_->publish(message);
    }
+
    rclcpp::TimerBase::SharedPtr timer_;
    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
    size_t count_;
