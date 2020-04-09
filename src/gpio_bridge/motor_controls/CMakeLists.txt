@@ -44,13 +44,19 @@ target_include_directories(motor_controls
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
+ament_export_interfaces(export_motor_controls HAS_LIBRARY_TARGET)
+ament_export_dependencies(OdroidGPIO)
+ament_export_dependencies(Threads)
+
 install(DIRECTORY include/
         DESTINATION include)
 
 install(TARGETS motor_controls
+        EXPORT export_motor_controls
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin)
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include)
 
 if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
@@ -61,6 +67,4 @@ if(BUILD_TESTING)
     target_link_libraries(test_motor_controls PRIVATE motor_controls)
 endif()
 
-ament_export_include_directories(include)
-ament_export_libraries(motor_controls)
 ament_package()
