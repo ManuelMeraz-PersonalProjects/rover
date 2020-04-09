@@ -61,4 +61,6 @@ if(BUILD_TESTING)
     target_link_libraries(test_motor_controls PRIVATE motor_controls)
 endif()
 
+ament_export_include_directories(include)
+ament_export_libraries(motor_controls)
 ament_package()

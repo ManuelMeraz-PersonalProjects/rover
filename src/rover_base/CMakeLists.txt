@@ -1,19 +1,55 @@
 cmake_minimum_required(VERSION 3.5)
 project(rover_base)
 
-include(cmake/Setup.cmake)
+# creates compile_commands.json database for linters
+if(NOT CMAKE_EXPORT_COMPILE_COMMANDS)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif()
 
-add_subdirectory(src)
+if(NOT CMAKE_C_STANDARD)
+    set(CMAKE_C_STANDARD 99)
+endif()
+
+if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 17)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+# Let's ensure -std=c++xx instead of -std=g++xx
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Let's nicely support folders in IDE's
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+
+list(APPEND nodes rover_node talker listener)
+
+foreach(node IN LISTS nodes)
+    add_executable(${node} src/${node}.cpp)
+    ament_target_dependencies(${node} rclcpp std_msgs)
+    target_include_directories(${node} PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:include>)
+
+    install(TARGETS ${node}
+            DESTINATION lib/${PROJECT_NAME})
+endforeach()
 
 if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # uncomment the line when a copyright and license is not present in all source files
-  #set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # uncomment the line when this package is not in a git repo
-  #set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
+    find_package(ament_lint_auto REQUIRED)
+    # the following line skips the linter which checks for copyrights
+    # uncomment the line when a copyright and license is not present in all source files
+    #set(ament_cmake_copyright_FOUND TRUE)
+    # the following line skips cpplint (only works in a git repo)
+    # uncomment the line when this package is not in a git repo
+    #set(ament_cmake_cpplint_FOUND TRUE)
+    ament_lint_auto_find_test_dependencies()
 endif()
 
 ament_package()
