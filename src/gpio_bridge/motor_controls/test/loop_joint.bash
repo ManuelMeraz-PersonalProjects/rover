@@ -5,8 +5,8 @@ trap "echo Exited!; exit;" SIGINT SIGTERM
 
 # Loop indefinitely
 while true; do
-# First go to one limit of arm right 3
-echo "Moving motors"
+  # First go to one limit of arm right 3
+  echo "Moving motors"
   ros2 topic pub /motor_controller_trajectory_controller/joint_trajectory trajectory_msgs/JointTrajectory "header:
   stamp:
     sec: 0
