@@ -67,6 +67,8 @@ class MotorController : public hardware_interface::RobotHardware
    Motor::uPtr m_left_motor{};
    Motor::uPtr m_right_motor{};
 
+   std::mutex m_mutex;
+
    std::array<double, 2> m_positions{};
    std::array<double, 2> m_velocities{};
    std::array<double, 2> m_efforts{};

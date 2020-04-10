@@ -24,8 +24,8 @@ motor_controls::MotorController::MotorController()
    auto& pwm1_pin = gpio::get<pwm::PWMPin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
    auto& pwm2_pin = gpio::get<pwm::PWMPin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
 
-   m_left_motor = std::make_unique<motor_controls::Motor>(dir2_pin, pwm2_pin);
-   m_right_motor = std::make_unique<motor_controls::Motor>(dir1_pin, pwm1_pin);
+   m_left_motor = std::make_unique<motor_controls::Motor>(dir1_pin, pwm1_pin);
+   m_right_motor = std::make_unique<motor_controls::Motor>(dir2_pin, pwm2_pin);
 }
 
 hardware_interface::hardware_interface_ret_t motor_controls::MotorController::init()
@@ -46,24 +46,25 @@ hardware_interface::hardware_interface_ret_t motor_controls::MotorController::in
          throw std::runtime_error("unable to register " + m_joint_commands[i].get_name());
       }
 
-      m_operation_modes[i] = hardware_interface::OperationMode(true);
-      std::stringstream mode_stream;
-      mode_stream << joint_name << "_mode";
-      m_operation_modes_handles[i] =
-         hardware_interface::OperationModeHandle(mode_stream.str(), &m_operation_modes[i]);
-      if (register_operation_mode_handle(&m_operation_modes_handles[i]) !=
-          hardware_interface::HW_RET_OK) {
-         throw std::runtime_error("unable to register " + m_operation_modes_handles[i].get_name());
-      }
-
       ++i;
    }
 
+   m_operation_modes[0] = hardware_interface::OperationMode(false);
+   m_operation_modes_handles[0] =
+      hardware_interface::OperationModeHandle("controller_mode", &m_operation_modes[0]);
+   if (register_operation_mode_handle(&m_operation_modes_handles[0]) !=
+       hardware_interface::HW_RET_OK) {
+      throw std::runtime_error("unable to register " + m_operation_modes_handles[0].get_name());
+   }
    return hardware_interface::HW_RET_OK;
 }
 
 hardware_interface::hardware_interface_ret_t motor_controls::MotorController::read()
 {
+   std::cout << "reading" << std::endl;
+   std::cout << "left effort: " << m_efforts[0] << std::endl;
+   std::cout << "right effort: " << m_efforts[1] << std::endl;
+
    m_efforts[0] = m_left_motor->duty_cycle();
    m_efforts[1] = m_right_motor->duty_cycle();
    // do robot specific stuff to update the pos_, vel_, eff_ arrays
@@ -73,8 +74,12 @@ hardware_interface::hardware_interface_ret_t motor_controls::MotorController::re
 
 hardware_interface::hardware_interface_ret_t motor_controls::MotorController::write()
 {
+   std::cout << "writing" << std::endl;
+   //   std::lock_guard<std::mutex> lock_guard(m_mutex);
    const double left_command_value = m_commands[0];
    const double right_command_value = m_commands[1];
+   std::cout << "left command: " << m_commands[0] << std::endl;
+   std::cout << "right command: " << m_commands[1] << std::endl;
 
    const Command left_command{left_command_value > 0 ? Direction::FORWARD : Direction::REVERSE,
                               static_cast<uint8_t>(std::abs(left_command_value))};
