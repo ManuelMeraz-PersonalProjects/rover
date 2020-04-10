@@ -3,6 +3,7 @@
 
 #include "Motor.hpp"
 
+#include <array>
 #include <chrono>
 #include <controller_interface/controller_interface.hpp>
 /*
@@ -23,7 +24,7 @@ struct Command
    std::optional<std::chrono::milliseconds> time{std::nullopt};
 };
 
-class MotorController
+class MotorController : public hardware_interface::RobotHardware
 {
  public:
    ~MotorController() = default;
@@ -33,6 +34,15 @@ class MotorController
    auto operator=(MotorController &&) -> MotorController& = delete;
 
    static auto get() -> MotorController&;
+
+   HARDWARE_INTERFACE_PUBLIC
+   hardware_interface::hardware_interface_ret_t init() override;
+
+   HARDWARE_INTERFACE_PUBLIC
+   hardware_interface::hardware_interface_ret_t read() override;
+
+   HARDWARE_INTERFACE_PUBLIC
+   hardware_interface::hardware_interface_ret_t write() override;
 
    /**
     * \brief Apply same command to both motors.
@@ -56,6 +66,14 @@ class MotorController
 
    Motor::uPtr m_left_motor{};
    Motor::uPtr m_right_motor{};
+
+   std::array<double, 2> m_positions{};
+   std::array<double, 2> m_velocities{};
+   std::array<double, 2> m_efforts{};
+   std::array<double, 2> m_commands{};
+
+   std::array<hardware_interface::JointStateHandle, 2> m_joint_states;
+   std::array<hardware_interface::JointCommandHandle, 2> m_joint_commands;
 };
 } // namespace motor_controls
 #endif // GPIO_BRIDGE_MOTORCONTROLLER_HPP
