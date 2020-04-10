@@ -6,4 +6,4 @@
 	url = https://github.com/ros-controls/ros2_control.git
 [submodule "src/ros2_controllers"]
 	path = src/ros2_controllers
-	url = https://github.com/ros-controls/ros2_controllers.git
+	url = git@github.com:ManuelMeraz/ros2_controllers.git
