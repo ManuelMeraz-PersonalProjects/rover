@@ -86,6 +86,10 @@ if(BUILD_TESTING)
     add_executable(test_motor_controls test/test_motor_controls.cpp)
     add_test(NAME test_motor_controls COMMAND test_motor_controls)
     target_link_libraries(test_motor_controls PRIVATE motor_controls)
+
+    add_executable(test_hardware_interface test/test_motor_controls.cpp)
+    add_test(NAME test_hardware_interface COMMAND test_motor_controls)
+    target_link_libraries(test_hardware_interface PRIVATE motor_controls)
 endif()
 
 ament_package()
