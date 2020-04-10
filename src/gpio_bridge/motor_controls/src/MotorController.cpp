@@ -21,6 +21,10 @@ constexpr int PWM2_WIRING_PI_PIN{24};
 
 motor_controls::MotorController::MotorController()
 {
+   if (!gpio::setup()) {
+      throw std::runtime_error("Setup Odroid GPIO Failed!");
+   }
+
    auto& dir1_pin = gpio::get<digital::DigitalPin>(DIR1_WIRING_PI_PIN, digital::Mode::OUTPUT);
    auto& dir2_pin = gpio::get<digital::DigitalPin>(DIR2_WIRING_PI_PIN, digital::Mode::OUTPUT);
    auto& pwm1_pin = gpio::get<pwm::PWMPin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
@@ -33,7 +37,7 @@ motor_controls::MotorController::MotorController()
 hardware_interface::hardware_interface_ret_t motor_controls::MotorController::init()
 {
 
-   const auto init_motor = [this](const MotorHandle::sharedPtr& handle) {
+   const auto init_motor = [this](const MotorHandle::sPtr& handle) {
       if (register_joint_state_handle(&handle->joint_state_handle) !=
           hardware_interface::HW_RET_OK) {
          throw std::runtime_error("unable to register " + handle->joint_state_handle.get_name());
@@ -125,10 +129,10 @@ void motor_controls::MotorController::stop()
 
 auto motor_controls::MotorController::get() -> motor_controls::MotorController&
 {
-   return *getPtr();
+   return *pointer();
 }
 
-auto motor_controls::MotorController::getPtr() -> std::shared_ptr<MotorController>
+auto motor_controls::MotorController::pointer() -> std::shared_ptr<MotorController>
 {
    if (g_controller == nullptr) {
       g_controller = std::make_shared<MotorController>();

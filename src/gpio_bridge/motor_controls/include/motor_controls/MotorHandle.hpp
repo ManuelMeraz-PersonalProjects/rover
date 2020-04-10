@@ -9,7 +9,7 @@
 namespace motor_controls {
 struct MotorHandle
 {
-   using sharedPtr = std::shared_ptr<MotorHandle>;
+   using sPtr = std::shared_ptr<MotorHandle>;
 
    double position{};
    double velocity{};

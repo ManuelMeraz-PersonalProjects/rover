@@ -32,7 +32,7 @@ class Motor
 
    [[nodiscard]] auto direction() const -> Direction;
    [[nodiscard]] auto duty_cycle() const -> uint8_t;
-   [[nodiscard]] auto handle() const -> MotorHandle::sharedPtr;
+   [[nodiscard]] auto handle() const -> MotorHandle::sPtr;
 
    void stop();
    void actuate(Direction direction,
@@ -50,7 +50,7 @@ class Motor
    gpio::pwm::PWMPin& m_pwm_pin;
 
    std::string m_name{};
-   MotorHandle::sharedPtr m_handle{};
+   MotorHandle::sPtr m_handle{};
 };
 
 } // namespace motor_controls

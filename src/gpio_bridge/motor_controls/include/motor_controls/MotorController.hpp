@@ -35,7 +35,7 @@ class MotorController : public hardware_interface::RobotHardware
    auto operator=(MotorController &&) -> MotorController& = delete;
 
    static auto get() -> MotorController&;
-   static auto getPtr() -> std::shared_ptr<MotorController>;
+   static auto pointer() -> std::shared_ptr<MotorController>;
 
    HARDWARE_INTERFACE_PUBLIC
    hardware_interface::hardware_interface_ret_t init() override;

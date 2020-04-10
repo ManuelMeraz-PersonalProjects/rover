@@ -112,7 +112,7 @@ void motor_controls::Motor::stop()
    m_pwm_pin.mode(gpio::pwm::Mode::OFF);
 }
 
-auto motor_controls::Motor::handle() const -> motor_controls::MotorHandle::sharedPtr
+auto motor_controls::Motor::handle() const -> motor_controls::MotorHandle::sPtr
 {
    return m_handle;
 }

@@ -8,11 +8,6 @@ using namespace std::chrono_literals;
 
 auto main() -> int
 {
-   if (!gpio::setup()) {
-      std::cout << "Setup Odroid GPIO Failed!" << std::endl;
-      return 1;
-   }
-
    auto& controller = motor_controls::MotorController::get();
 
    constexpr uint8_t DUTY_CYCLE = 100;
