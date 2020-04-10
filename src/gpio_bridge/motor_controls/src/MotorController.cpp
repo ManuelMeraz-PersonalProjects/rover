@@ -7,16 +7,9 @@ namespace digital = gpio::digital;
 namespace pwm = gpio::pwm;
 
 namespace {
-struct MotorControllerDeleter
-{
-   void operator()(motor_controls::MotorController* controller) const
-   {
-      delete controller;
-   }
-};
 
 // globals
-std::unique_ptr<motor_controls::MotorController, MotorControllerDeleter> g_controller{nullptr};
+std::shared_ptr<motor_controls::MotorController> g_controller{nullptr};
 
 constexpr int DIR1_WIRING_PI_PIN{21};
 constexpr int DIR2_WIRING_PI_PIN{22};
@@ -37,7 +30,7 @@ motor_controls::MotorController::MotorController()
 
 hardware_interface::hardware_interface_ret_t motor_controls::MotorController::init()
 {
-   constexpr std::array<const char*, 2> joint_names{"my_robot_joint_1", "my_robot_joint_2"};
+   constexpr std::array<const char*, 2> joint_names{"left_wheels", "right_wheels"};
 
    size_t i = 0;
    for (auto& joint_name : joint_names) {
@@ -128,9 +121,14 @@ void motor_controls::MotorController::stop()
 
 auto motor_controls::MotorController::get() -> motor_controls::MotorController&
 {
+   return *getPtr();
+}
+
+auto motor_controls::MotorController::getPtr() -> std::shared_ptr<MotorController>
+{
    if (g_controller == nullptr) {
-      g_controller.reset(new motor_controls::MotorController());
+      g_controller = std::make_shared<MotorController>();
    }
 
-   return *g_controller;
+   return g_controller;
 }

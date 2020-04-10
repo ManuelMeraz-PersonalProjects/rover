@@ -27,6 +27,7 @@ struct Command
 class MotorController : public hardware_interface::RobotHardware
 {
  public:
+   MotorController();
    ~MotorController() = default;
    MotorController(const MotorController&) = delete;
    MotorController(MotorController&&) = delete;
@@ -34,6 +35,7 @@ class MotorController : public hardware_interface::RobotHardware
    auto operator=(MotorController &&) -> MotorController& = delete;
 
    static auto get() -> MotorController&;
+   static auto getPtr() -> std::shared_ptr<MotorController>;
 
    HARDWARE_INTERFACE_PUBLIC
    hardware_interface::hardware_interface_ret_t init() override;
@@ -62,7 +64,6 @@ class MotorController : public hardware_interface::RobotHardware
    void stop();
 
  private:
-   MotorController();
 
    Motor::uPtr m_left_motor{};
    Motor::uPtr m_right_motor{};

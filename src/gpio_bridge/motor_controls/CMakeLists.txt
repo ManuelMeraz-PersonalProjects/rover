@@ -39,6 +39,11 @@ add_library(rclcpp INTERFACE)
 target_link_libraries(rclcpp INTERFACE ${rclcpp_LIBRARIES})
 target_include_directories(rclcpp INTERFACE ${rclcpp_INCLUDE_DIRS})
 
+find_package(controller_manager REQUIRED)
+add_library(controller_manager INTERFACE)
+target_link_libraries(controller_manager INTERFACE ${controller_manager_LIBRARIES})
+target_include_directories(controller_manager INTERFACE ${controller_manager_INCLUDE_DIRS})
+
 add_library(motor_controls
         SHARED
         src/Motor.cpp
@@ -87,9 +92,9 @@ if(BUILD_TESTING)
     add_test(NAME test_motor_controls COMMAND test_motor_controls)
     target_link_libraries(test_motor_controls PRIVATE motor_controls)
 
-    add_executable(test_hardware_interface test/test_motor_controls.cpp)
-    add_test(NAME test_hardware_interface COMMAND test_motor_controls)
-    target_link_libraries(test_hardware_interface PRIVATE motor_controls)
+    add_executable(test_hardware_interface test/test_hardware_interface.cpp)
+    add_test(NAME test_hardware_interface COMMAND test_hardware_interface)
+    target_link_libraries(test_hardware_interface PRIVATE motor_controls controller_manager)
 endif()
 
 ament_package()
