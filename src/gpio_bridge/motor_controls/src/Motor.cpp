@@ -7,9 +7,20 @@ constexpr uint8_t CLOCK_HZ{128};
 constexpr int RANGE{100};
 } // namespace
 
-motor_controls::Motor::Motor(gpio::digital::DigitalPin& dir_pin, gpio::pwm::PWMPin& pwm_pin) :
-   m_direction(Direction::FORWARD), m_duty_cycle(0), m_dir_pin(dir_pin), m_pwm_pin(pwm_pin)
+motor_controls::Motor::Motor(std::string name,
+                             gpio::digital::DigitalPin& dir_pin,
+                             gpio::pwm::PWMPin& pwm_pin) :
+   m_direction(Direction::FORWARD),
+   m_duty_cycle(0),
+   m_dir_pin(dir_pin),
+   m_pwm_pin(pwm_pin),
+   m_name(std::move(name)),
+   m_handle(std::make_shared<MotorHandle>())
 {
+   m_handle->joint_state_handle = hardware_interface::JointStateHandle(
+      m_name, &m_handle->position, &m_handle->velocity, &m_handle->effort);
+   m_handle->joint_command_handle =
+      hardware_interface::JointCommandHandle(m_name, &m_handle->command);
    m_dir_pin.write(gpio::digital::IO::LOW);
    stop();
 }
@@ -99,4 +110,9 @@ void motor_controls::Motor::stop()
    }
 
    m_pwm_pin.mode(gpio::pwm::Mode::OFF);
+}
+
+auto motor_controls::Motor::handle() const -> motor_controls::MotorHandle::sharedPtr
+{
+   return m_handle;
 }

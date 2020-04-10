@@ -1,5 +1,7 @@
 #include "motor_controls/MotorController.hpp"
 
+#include "motor_controls/MotorHandle.hpp"
+
 #include <thread>
 
 using namespace std::chrono_literals;
@@ -24,62 +26,52 @@ motor_controls::MotorController::MotorController()
    auto& pwm1_pin = gpio::get<pwm::PWMPin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
    auto& pwm2_pin = gpio::get<pwm::PWMPin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
 
-   m_left_motor = std::make_unique<motor_controls::Motor>(dir1_pin, pwm1_pin);
-   m_right_motor = std::make_unique<motor_controls::Motor>(dir2_pin, pwm2_pin);
+   m_left_motor = std::make_unique<motor_controls::Motor>("left_wheels", dir1_pin, pwm1_pin);
+   m_right_motor = std::make_unique<motor_controls::Motor>("right_wheels", dir2_pin, pwm2_pin);
 }
 
 hardware_interface::hardware_interface_ret_t motor_controls::MotorController::init()
 {
-   constexpr std::array<const char*, 2> joint_names{"left_wheels", "right_wheels"};
 
-   size_t i = 0;
-   for (auto& joint_name : joint_names) {
-
-      m_joint_states[i] = hardware_interface::JointStateHandle(
-         joint_name, &m_positions[i], &m_velocities[i], &m_efforts[i]);
-      if (register_joint_state_handle(&m_joint_states[i]) != hardware_interface::HW_RET_OK) {
-         throw std::runtime_error("unable to register " + m_joint_states[i].get_name());
+   const auto init_motor = [this](const MotorHandle::sharedPtr& handle) {
+      if (register_joint_state_handle(&handle->joint_state_handle) !=
+          hardware_interface::HW_RET_OK) {
+         throw std::runtime_error("unable to register " + handle->joint_state_handle.get_name());
       }
 
-      m_joint_commands[i] = hardware_interface::JointCommandHandle(joint_name, &m_commands[i]);
-      if (register_joint_command_handle(&m_joint_commands[i]) != hardware_interface::HW_RET_OK) {
-         throw std::runtime_error("unable to register " + m_joint_commands[i].get_name());
+      if (register_joint_command_handle(&handle->joint_command_handle) !=
+          hardware_interface::HW_RET_OK) {
+         throw std::runtime_error("unable to register " + handle->joint_command_handle.get_name());
       }
+   };
 
-      ++i;
-   }
+   init_motor(m_left_motor->handle());
+   init_motor(m_right_motor->handle());
 
-   m_operation_modes[0] = hardware_interface::OperationMode(false);
-   m_operation_modes_handles[0] =
-      hardware_interface::OperationModeHandle("controller_mode", &m_operation_modes[0]);
-   if (register_operation_mode_handle(&m_operation_modes_handles[0]) !=
-       hardware_interface::HW_RET_OK) {
-      throw std::runtime_error("unable to register " + m_operation_modes_handles[0].get_name());
+   if (register_operation_mode_handle(&m_operation.handle) != hardware_interface::HW_RET_OK) {
+      throw std::runtime_error("unable to register " + m_operation.handle.get_name());
    }
    return hardware_interface::HW_RET_OK;
 }
 
 hardware_interface::hardware_interface_ret_t motor_controls::MotorController::read()
 {
-   std::cout << "reading" << std::endl;
-   std::cout << "left effort: " << m_efforts[0] << std::endl;
-   std::cout << "right effort: " << m_efforts[1] << std::endl;
+   auto left_motor_handle = m_left_motor->handle();
+   auto right_motor_handle = m_right_motor->handle();
 
-   m_efforts[0] = m_left_motor->duty_cycle();
-   m_efforts[1] = m_right_motor->duty_cycle();
-   // do robot specific stuff to update the pos_, vel_, eff_ arrays
+   left_motor_handle->effort = m_left_motor->duty_cycle();
+   right_motor_handle->effort = m_right_motor->duty_cycle();
 
    return hardware_interface::HW_RET_OK;
 }
 
 hardware_interface::hardware_interface_ret_t motor_controls::MotorController::write()
 {
-   std::cout << "writing" << std::endl;
-   //   std::lock_guard<std::mutex> lock_guard(m_mutex);
-   const double left_command_value = m_commands[0];
-   const double right_command_value = m_commands[1];
-   std::cout << "left command: " << m_commands[0] << std::endl;
-   std::cout << "right command: " << m_commands[1] << std::endl;
+   auto left_motor_handle = m_left_motor->handle();
+   auto right_motor_handle = m_right_motor->handle();
+
+   const double left_command_value = left_motor_handle->command;
+   const double right_command_value = left_motor_handle->command;
 
    const Command left_command{left_command_value > 0 ? Direction::FORWARD : Direction::REVERSE,
                               static_cast<uint8_t>(std::abs(left_command_value))};
