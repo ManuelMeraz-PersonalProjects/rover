@@ -1,15 +1,21 @@
 #include <controller_manager/controller_manager.hpp>
 #include <motor_controls/MotorController.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <ros_controllers/joint_trajectory_controller.hpp>
 
 void spin(std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> exe)
 {
    exe->spin();
 }
 
-int main()
+int main(int argc, char** argv)
 {
-   // do all the init stuff
+   if (!gpio::setup()) {
+      std::cerr << "Setup Odroid GPIO Failed!" << std::endl;
+      return 1;
+   }
+
+   rclcpp::init(argc, argv);
 
    // Logger
    const rclcpp::Logger logger = rclcpp::get_logger("motor_controller_logger");
@@ -25,7 +31,7 @@ int main()
 
    auto executor = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
 
-   // start the controller manager with the robot hardware
+   //    start the controller manager with the robot hardware
    controller_manager::ControllerManager cm(motor_controller, executor);
 
    // load the joint state controller.
@@ -34,27 +40,34 @@ int main()
    // "motor_controller_joint_state_controller" is the name for the node to spawn
    cm.load_controller("ros_controllers",
                       "ros_controllers::JointStateController",
-                      "motor_controller_joint_state_controller");
-   // load the trajectory controller
-   cm.load_controller("ros_controllers",
-                      "ros_controllers::JointTrajectoryController",
-                      "motor_controller_joint_trajectory_controller");
+                      "motor_controller_state_controller");
 
-   // there is no async spinner in ROS 2, so we have to put the spin() in its own thread
-   auto future_handle = std::async(std::launch::async, spin, executor);
+   //    load the trajectory controller
+   //   cm.load_controller("ros_controllers",
+   //                      "ros_controllers::JointTrajectoryController",
+   //                      "motor_controller_trajectory_controller");
+
+   auto joint_controller = std::make_shared<ros_controllers::JointTrajectoryController>(
+      motor_controller->get_registered_joint_names(),
+      motor_controller->get_registered_write_op_names());
+
+   cm.add_controller(joint_controller, "motor_controller_trajectory_controller");
 
    // we can either configure each controller individually through its services
    // or we use the controller manager to configure every loaded controller
    if (cm.configure() != controller_interface::CONTROLLER_INTERFACE_RET_SUCCESS) {
       RCLCPP_ERROR(logger, "at least one controller failed to configure");
-      return -1;
+      return 1;
    }
 
    // and activate all controller
    if (cm.activate() != controller_interface::CONTROLLER_INTERFACE_RET_SUCCESS) {
       RCLCPP_ERROR(logger, "at least one controller failed to activate");
-      return -1;
+      return 1;
    }
+
+   // there is no async spinner in ROS 2, so we have to put the spin() in its own thread
+   auto future_handle = std::async(std::launch::async, spin, executor);
 
    // main loop
    hardware_interface::hardware_interface_ret_t ret;

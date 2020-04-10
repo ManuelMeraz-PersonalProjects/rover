@@ -28,6 +28,12 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 find_package(ament_cmake REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OdroidGPIO REQUIRED)
+find_package(controller_manager REQUIRED)
+
+find_package(ros_controllers REQUIRED)
+add_library(ros_controllers INTERFACE)
+target_link_libraries(ros_controllers INTERFACE ${ros_controllers_LIBRARIES})
+target_include_directories(ros_controllers INTERFACE ${ros_controllers_INCLUDE_DIRS})
 
 find_package(controller_interface REQUIRED)
 add_library(controller_interface INTERFACE)
@@ -77,6 +83,9 @@ install(TARGETS rclcpp
 install(TARGETS controller_interface
         EXPORT export_motor_controls)
 
+install(TARGETS controller_manager
+        EXPORT export_motor_controls)
+
 install(TARGETS motor_controls
         EXPORT export_motor_controls
         LIBRARY DESTINATION lib
@@ -94,7 +103,7 @@ if(BUILD_TESTING)
 
     add_executable(test_hardware_interface test/test_hardware_interface.cpp)
     add_test(NAME test_hardware_interface COMMAND test_hardware_interface)
-    target_link_libraries(test_hardware_interface PRIVATE motor_controls controller_manager)
+    target_link_libraries(test_hardware_interface PRIVATE motor_controls controller_manager ros_controllers)
 endif()
 
 ament_package()

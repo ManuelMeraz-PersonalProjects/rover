@@ -28,7 +28,7 @@ class MotorController : public hardware_interface::RobotHardware
 {
  public:
    MotorController();
-   ~MotorController() = default;
+   ~MotorController() override = default;
    MotorController(const MotorController&) = delete;
    MotorController(MotorController&&) = delete;
    auto operator=(const MotorController&) -> MotorController& = delete;
@@ -64,7 +64,6 @@ class MotorController : public hardware_interface::RobotHardware
    void stop();
 
  private:
-
    Motor::uPtr m_left_motor{};
    Motor::uPtr m_right_motor{};
 
@@ -73,8 +72,10 @@ class MotorController : public hardware_interface::RobotHardware
    std::array<double, 2> m_efforts{};
    std::array<double, 2> m_commands{};
 
-   std::array<hardware_interface::JointStateHandle, 2> m_joint_states;
-   std::array<hardware_interface::JointCommandHandle, 2> m_joint_commands;
+   std::array<hardware_interface::JointStateHandle, 2> m_joint_states{};
+   std::array<hardware_interface::JointCommandHandle, 2> m_joint_commands{};
+   std::array<hardware_interface::OperationModeHandle, 2> m_operation_modes_handles{};
+   std::array<hardware_interface::OperationMode, 2> m_operation_modes{};
 };
 } // namespace motor_controls
 #endif // GPIO_BRIDGE_MOTORCONTROLLER_HPP

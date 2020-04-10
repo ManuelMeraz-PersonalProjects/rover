@@ -35,18 +35,25 @@ hardware_interface::hardware_interface_ret_t motor_controls::MotorController::in
    size_t i = 0;
    for (auto& joint_name : joint_names) {
 
-      hardware_interface::JointStateHandle state_handle(
+      m_joint_states[i] = hardware_interface::JointStateHandle(
          joint_name, &m_positions[i], &m_velocities[i], &m_efforts[i]);
-
-      m_joint_states[i] = state_handle;
       if (register_joint_state_handle(&m_joint_states[i]) != hardware_interface::HW_RET_OK) {
          throw std::runtime_error("unable to register " + m_joint_states[i].get_name());
       }
 
-      hardware_interface::JointCommandHandle command_handle(joint_name, &m_commands[i]);
-      m_joint_commands[i] = command_handle;
+      m_joint_commands[i] = hardware_interface::JointCommandHandle(joint_name, &m_commands[i]);
       if (register_joint_command_handle(&m_joint_commands[i]) != hardware_interface::HW_RET_OK) {
          throw std::runtime_error("unable to register " + m_joint_commands[i].get_name());
+      }
+
+      m_operation_modes[i] = hardware_interface::OperationMode(true);
+      std::stringstream mode_stream;
+      mode_stream << joint_name << "_mode";
+      m_operation_modes_handles[i] =
+         hardware_interface::OperationModeHandle(mode_stream.str(), &m_operation_modes[i]);
+      if (register_operation_mode_handle(&m_operation_modes_handles[i]) !=
+          hardware_interface::HW_RET_OK) {
+         throw std::runtime_error("unable to register " + m_operation_modes_handles[i].get_name());
       }
 
       ++i;
