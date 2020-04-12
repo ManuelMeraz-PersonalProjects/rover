@@ -35,7 +35,7 @@ int main(int argc, char** argv)
       std::vector<std::string>{"right_wheels"},
       motor_controller->get_registered_write_op_names());
 
-   cm.add_controller(diff_drive_controller, "motor_trajectory_controller");
+   cm.add_controller(diff_drive_controller, "motor_controller");
 
    if (cm.configure() != controller_interface::CONTROLLER_INTERFACE_RET_SUCCESS) {
       RCLCPP_ERROR(logger, "At least one controller failed to configure");
