@@ -56,7 +56,7 @@ target_include_directories(motor_controls
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-ament_export_interfaces(export_motor_controls HAS_LIBRARY_TARGET)
+ament_export_targets(export_motor_controls HAS_LIBRARY_TARGET)
 ament_export_dependencies(OdroidGPIO)
 ament_export_dependencies(Threads)
 ament_export_dependencies(rclcpp)
@@ -88,10 +88,15 @@ if(BUILD_TESTING)
     target_link_libraries(controller_manager INTERFACE ${controller_manager_LIBRARIES})
     target_include_directories(controller_manager INTERFACE ${controller_manager_INCLUDE_DIRS})
 
-    find_package(ros_controllers REQUIRED)
-    add_library(ros_controllers INTERFACE)
-    target_link_libraries(ros_controllers INTERFACE ${ros_controllers_LIBRARIES})
-    target_include_directories(ros_controllers INTERFACE ${ros_controllers_INCLUDE_DIRS})
+    find_package(diff_drive_controller REQUIRED)
+    add_library(diff_drive_controller INTERFACE)
+    target_link_libraries(diff_drive_controller INTERFACE ${diff_drive_controller_LIBRARIES})
+    target_include_directories(diff_drive_controller INTERFACE ${diff_drive_controller_INCLUDE_DIRS})
+
+    find_package(joint_state_controller REQUIRED)
+    add_library(joint_state_controller INTERFACE)
+    target_link_libraries(joint_state_controller INTERFACE ${joint_state_controller_LIBRARIES})
+    target_include_directories(joint_state_controller INTERFACE ${joint_state_controller_INCLUDE_DIRS})
 
     add_executable(test_motor_controls test/test_motor_controls.cpp)
     add_test(NAME test_motor_controls COMMAND test_motor_controls)
@@ -99,7 +104,7 @@ if(BUILD_TESTING)
 
     add_executable(test_hardware_interface test/test_hardware_interface.cpp)
     add_test(NAME test_hardware_interface COMMAND test_hardware_interface)
-    target_link_libraries(test_hardware_interface PRIVATE motor_controls controller_manager ros_controllers)
+    target_link_libraries(test_hardware_interface PRIVATE motor_controls diff_drive_controller controller_manager joint_state_controller)
     ament_export_dependencies(ros_controllers)
     ament_export_dependencies(controller_manager)
 

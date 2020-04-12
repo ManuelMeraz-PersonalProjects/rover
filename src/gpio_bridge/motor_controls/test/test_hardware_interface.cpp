@@ -1,8 +1,8 @@
 #include <controller_manager/controller_manager.hpp>
 #include <motor_controls/MotorController.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <ros_controllers/diff_drive_controller.hpp>
-#include <ros_controllers/joint_state_controller.hpp>
+#include <diff_drive_controller/diff_drive_controller.hpp>
+#include <joint_state_controller/joint_state_controller.hpp>
 
 void spin(std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> exe)
 {
@@ -27,10 +27,10 @@ int main(int argc, char** argv)
    const auto executor = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
    controller_manager::ControllerManager cm(motor_controller, executor);
 
-   const auto joint_state_controller = std::make_shared<ros_controllers::JointStateController>();
+   const auto joint_state_controller = std::make_shared<joint_state_controller::JointStateController>();
    cm.add_controller(joint_state_controller, "motor_state_controller");
 
-   const auto diff_drive_controller = std::make_shared<ros_controllers::DiffDriveController>(
+   const auto diff_drive_controller = std::make_shared<diff_drive_controller::DiffDriveController>(
       std::vector<std::string>{"left_wheels"},
       std::vector<std::string>{"right_wheels"},
       motor_controller->get_registered_write_op_names());
