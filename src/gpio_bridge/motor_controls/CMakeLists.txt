@@ -28,12 +28,6 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 find_package(ament_cmake REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OdroidGPIO REQUIRED)
-find_package(controller_manager REQUIRED)
-
-find_package(ros_controllers REQUIRED)
-add_library(ros_controllers INTERFACE)
-target_link_libraries(ros_controllers INTERFACE ${ros_controllers_LIBRARIES})
-target_include_directories(ros_controllers INTERFACE ${ros_controllers_INCLUDE_DIRS})
 
 find_package(controller_interface REQUIRED)
 add_library(controller_interface INTERFACE)
@@ -44,11 +38,6 @@ find_package(rclcpp REQUIRED)
 add_library(rclcpp INTERFACE)
 target_link_libraries(rclcpp INTERFACE ${rclcpp_LIBRARIES})
 target_include_directories(rclcpp INTERFACE ${rclcpp_INCLUDE_DIRS})
-
-find_package(controller_manager REQUIRED)
-add_library(controller_manager INTERFACE)
-target_link_libraries(controller_manager INTERFACE ${controller_manager_LIBRARIES})
-target_include_directories(controller_manager INTERFACE ${controller_manager_INCLUDE_DIRS})
 
 add_library(motor_controls
         SHARED
@@ -67,11 +56,11 @@ target_include_directories(motor_controls
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
+ament_export_interfaces(export_motor_controls HAS_LIBRARY_TARGET)
 ament_export_dependencies(OdroidGPIO)
 ament_export_dependencies(Threads)
 ament_export_dependencies(rclcpp)
 ament_export_dependencies(controller_interface)
-ament_export_interfaces(export_motor_controls HAS_LIBRARY_TARGET)
 
 install(DIRECTORY include/
         DESTINATION include)
@@ -81,9 +70,6 @@ install(TARGETS rclcpp
         EXPORT export_motor_controls)
 
 install(TARGETS controller_interface
-        EXPORT export_motor_controls)
-
-install(TARGETS controller_manager
         EXPORT export_motor_controls)
 
 install(TARGETS motor_controls
@@ -97,6 +83,16 @@ if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
     ament_lint_auto_find_test_dependencies()
 
+    find_package(controller_manager REQUIRED)
+    add_library(controller_manager INTERFACE)
+    target_link_libraries(controller_manager INTERFACE ${controller_manager_LIBRARIES})
+    target_include_directories(controller_manager INTERFACE ${controller_manager_INCLUDE_DIRS})
+
+    find_package(ros_controllers REQUIRED)
+    add_library(ros_controllers INTERFACE)
+    target_link_libraries(ros_controllers INTERFACE ${ros_controllers_LIBRARIES})
+    target_include_directories(ros_controllers INTERFACE ${ros_controllers_INCLUDE_DIRS})
+
     add_executable(test_motor_controls test/test_motor_controls.cpp)
     add_test(NAME test_motor_controls COMMAND test_motor_controls)
     target_link_libraries(test_motor_controls PRIVATE motor_controls)
@@ -104,6 +100,13 @@ if(BUILD_TESTING)
     add_executable(test_hardware_interface test/test_hardware_interface.cpp)
     add_test(NAME test_hardware_interface COMMAND test_hardware_interface)
     target_link_libraries(test_hardware_interface PRIVATE motor_controls controller_manager ros_controllers)
+    ament_export_dependencies(ros_controllers)
+    ament_export_dependencies(controller_manager)
+
+    install(TARGETS controller_manager
+        EXPORT export_motor_controls)
+
 endif()
+
 
 ament_package()
