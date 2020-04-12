@@ -76,7 +76,6 @@ hardware_interface::hardware_interface_ret_t motor_controls::MotorController::wr
 
    const double left_command_value = left_motor_handle->command;
    const double right_command_value = right_motor_handle->command;
-   std::cout << "Received commands: left: " << left_command_value << " right: " << right_command_value << std::endl;
 
    const Command left_command{left_command_value > 0 ? Direction::FORWARD : Direction::REVERSE,
                               static_cast<uint8_t>(std::abs(left_command_value))};
