@@ -4,6 +4,3 @@
 [submodule "src/ros2_controllers"]
 	path = src/ros2_controllers
 	url = git@github.com:ManuelMeraz/ros2_controllers.git
-[submodule "src/ros2_intel_realsense"]
-	path = src/ros2_intel_realsense
-	url = https://github.com/intel/ros2_intel_realsense.git
