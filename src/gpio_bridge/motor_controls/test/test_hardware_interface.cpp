@@ -1,8 +1,8 @@
 #include <controller_manager/controller_manager.hpp>
 #include <motor_controls/MotorController.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <ros_controllers/diff_drive_controller.hpp>
 #include <ros_controllers/joint_state_controller.hpp>
-#include <ros_controllers/joint_trajectory_controller.hpp>
 
 void spin(std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> exe)
 {
@@ -30,12 +30,12 @@ int main(int argc, char** argv)
    const auto joint_state_controller = std::make_shared<ros_controllers::JointStateController>();
    cm.add_controller(joint_state_controller, "motor_state_controller");
 
-   const auto joint_trajectory_controller =
-      std::make_shared<ros_controllers::JointTrajectoryController>(
-         motor_controller->get_registered_joint_names(),
-         motor_controller->get_registered_write_op_names());
+   const auto diff_drive_controller = std::make_shared<ros_controllers::DiffDriveController>(
+      std::vector<std::string>{"left_wheels"},
+      std::vector<std::string>{"right_wheels"},
+      motor_controller->get_registered_write_op_names());
 
-   cm.add_controller(joint_trajectory_controller, "motor_trajectory_controller");
+   cm.add_controller(diff_drive_controller, "motor_trajectory_controller");
 
    if (cm.configure() != controller_interface::CONTROLLER_INTERFACE_RET_SUCCESS) {
       RCLCPP_ERROR(logger, "At least one controller failed to configure");
