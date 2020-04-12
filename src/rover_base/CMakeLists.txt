@@ -28,6 +28,21 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(controller_interface REQUIRED)
+## realsense
+
+ament_export_dependencies(rclcpp)
+ament_export_dependencies(std_msgs)
+ament_export_dependencies(controller_interface)
+ament_export_dependencies(realsense_ros)
+ament_export_dependencies(realsense_node)
+ament_export_dependencies(realsense_msgs)
+
+
+install(DIRECTORY 
+        launch 
+        config 
+        DESTINATION share/${PROJECT_NAME})
+## realsense end
 
 list(APPEND nodes rover_node talker listener)
 
