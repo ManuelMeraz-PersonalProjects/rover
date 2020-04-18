@@ -1,5 +1,6 @@
 #include "motor_controls/Motor.hpp"
 
+#include <iostream>
 #include <odroid/gpio.hpp>
 
 namespace {
@@ -7,9 +8,7 @@ constexpr uint8_t CLOCK_HZ{128};
 constexpr int RANGE{100};
 } // namespace
 
-motor_controls::Motor::Motor(std::string name,
-                             gpio::digital::DigitalPin& dir_pin,
-                             gpio::pwm::PWMPin& pwm_pin) :
+motor_controls::Motor::Motor(std::string name, gpio::digital::Pin& dir_pin, gpio::pwm::Pin& pwm_pin) :
    m_direction(Direction::FORWARD),
    m_duty_cycle(0),
    m_dir_pin(dir_pin),
@@ -22,11 +21,6 @@ motor_controls::Motor::Motor(std::string name,
    m_handle->joint_command_handle =
       hardware_interface::JointCommandHandle(m_name, &m_handle->command);
    m_dir_pin.write(gpio::digital::IO::LOW);
-   stop();
-}
-
-motor_controls::Motor::~Motor()
-{
    stop();
 }
 

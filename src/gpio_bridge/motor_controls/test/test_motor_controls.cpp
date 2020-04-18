@@ -2,7 +2,6 @@
 
 #include <chrono>
 #include <iostream>
-#include <odroid/gpio.hpp>
 
 using namespace std::chrono_literals;
 

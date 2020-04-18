@@ -13,10 +13,10 @@ namespace {
 // globals
 std::shared_ptr<motor_controls::MotorController> g_controller{nullptr};
 
-constexpr int DIR1_WIRING_PI_PIN{21};
-constexpr int DIR2_WIRING_PI_PIN{22};
-constexpr int PWM1_WIRING_PI_PIN{23};
-constexpr int PWM2_WIRING_PI_PIN{24};
+constexpr uint8_t DIR1_WIRING_PI_PIN{21};
+constexpr uint8_t DIR2_WIRING_PI_PIN{22};
+constexpr uint8_t PWM1_WIRING_PI_PIN{23};
+constexpr uint8_t PWM2_WIRING_PI_PIN{24};
 } // namespace
 
 motor_controls::MotorController::MotorController()
@@ -25,10 +25,10 @@ motor_controls::MotorController::MotorController()
       throw std::runtime_error("Setup Odroid GPIO Failed!");
    }
 
-   auto& dir1_pin = gpio::get<digital::DigitalPin>(DIR1_WIRING_PI_PIN, digital::Mode::OUTPUT);
-   auto& dir2_pin = gpio::get<digital::DigitalPin>(DIR2_WIRING_PI_PIN, digital::Mode::OUTPUT);
-   auto& pwm1_pin = gpio::get<pwm::PWMPin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
-   auto& pwm2_pin = gpio::get<pwm::PWMPin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
+   auto& dir1_pin = gpio::get<digital::Pin>(DIR1_WIRING_PI_PIN, digital::Mode::OUTPUT);
+   auto& dir2_pin = gpio::get<digital::Pin>(DIR2_WIRING_PI_PIN, digital::Mode::OUTPUT);
+   auto& pwm1_pin = gpio::get<pwm::Pin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
+   auto& pwm2_pin = gpio::get<pwm::Pin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
 
    m_left_motor = std::make_unique<motor_controls::Motor>("left_wheels", dir1_pin, pwm1_pin);
    m_right_motor = std::make_unique<motor_controls::Motor>("right_wheels", dir2_pin, pwm2_pin);
