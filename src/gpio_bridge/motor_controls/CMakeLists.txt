@@ -46,7 +46,7 @@ add_library(motor_controls
 
 target_link_libraries(motor_controls
         PUBLIC
-        odroidgpio
+        OdroidGPIO
         Threads::Threads
         controller_interface
         rclcpp)
