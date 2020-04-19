@@ -2,6 +2,9 @@
 #define IMU_ADAFRUIT_BNO055_DATA_HPP
 
 #include <Adafruit_Sensor.h>
+#include <iomanip>
+#include <iostream>
+#include <utility/quaternion.h>
 #include <utility/vector.h>
 
 namespace gpio_bridge::imu {
@@ -19,26 +22,6 @@ struct Data
 
    friend auto operator<<(std::ostream& os, const Data& data) -> std::ostream&;
 };
-
-auto operator<<(std::ostream& os, const Data& data) -> std::ostream&
-{
-   os << "Accelerometer       {" << data.accelerometer.x() << ", " << data.accelerometer.y() << " ,"
-      << data.accelerometer.z() << "}" << std::endl;
-   os << "Magnetometer        {" << data.magnetometer.x() << ", " << data.magnetometer.y() << " ,"
-      << data.magnetometer.z() << "}" << std::endl;
-   os << "Gyroscope           {" << data.gyroscope.x() << ", " << data.gyroscope.y() << " ," << data.gyroscope.z()
-      << "}" << std::endl;
-   os << "Euler               {" << data.euler.x() << ", " << data.euler.y() << " ," << data.euler.z() << "}"
-      << std::endl;
-   os << "Linear Acceleration {" << data.linear_acceleration.x() << ", " << data.linear_acceleration.y() << " ,"
-      << data.linear_acceleration.z() << "}" << std::endl;
-   os << "Gravity             {" << data.gravity.x() << ", " << data.gravity.y() << " ," << data.gravity.z() << "}"
-      << std::endl;
-   os << "Quaternion          {" << data.quaternion.w() << ", " << data.quaternion.x() << ", " << data.quaternion.y()
-      << " ," << data.quaternion.z() << "}" << std::endl;
-   os << "Temperature         {" << static_cast<uint16_t>(data.temperature) << "}" << std::endl;
-   return os;
-}
 
 } // namespace gpio_bridge::imu
 

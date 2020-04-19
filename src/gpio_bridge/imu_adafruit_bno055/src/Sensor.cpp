@@ -31,6 +31,14 @@ auto Sensor::get() -> Sensor&
 
 auto Sensor::data() -> const Data&
 {
+   m_data.accelerometer = m_sensor.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+   m_data.magnetometer = m_sensor.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
+   m_data.gyroscope = m_sensor.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+   m_data.euler = m_sensor.getVector(Adafruit_BNO055::VECTOR_EULER);
+   m_data.linear_acceleration = m_sensor.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+   m_data.gravity = m_sensor.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
+   m_data.quaternion = m_sensor.getQuat();
+   m_data.temperature = m_sensor.getTemp();
    return m_data;
 }
 
@@ -136,6 +144,19 @@ auto Sensor::handle_results(const StatusResults& results) -> bool
    }
 
    return initializing;
+}
+
+auto Sensor::calibration_status() -> const Calibration&
+{
+   /* Get the four calibration values (0..3) */
+   /* Any sensor data reporting 0 should be ignored, */
+   /* 3 means 'fully calibrated" */
+   m_sensor.getCalibration(&m_calibration_status.system,
+                           &m_calibration_status.gyroscope,
+                           &m_calibration_status.accelerometer,
+                           &m_calibration_status.magnetometer);
+
+   return m_calibration_status;
 }
 
 } // namespace gpio_bridge::imu

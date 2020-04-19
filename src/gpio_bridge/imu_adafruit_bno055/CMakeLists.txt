@@ -30,7 +30,9 @@ find_package(OdroidAdafruitBNO055 REQUIRED)
 
 add_library(imu_adafruit_bno055
         SHARED
-        src/Sensor.cpp)
+        src/Sensor.cpp
+        src/Data.cpp
+        src/Calibration.cpp)
 
 target_link_libraries(imu_adafruit_bno055
         PUBLIC

@@ -1,6 +1,7 @@
 #ifndef GPIO_BRIDGE_IMU_HPP
 #define GPIO_BRIDGE_IMU_HPP
 
+#include "Calibration.hpp"
 #include "Data.hpp"
 
 #include <Adafruit_BNO055.h>
@@ -19,6 +20,7 @@ class Sensor
 
    static auto get() -> Sensor&;
    auto data() -> const Data&;
+   auto calibration_status() -> const Calibration&;
 
  private:
    enum class SystemStatus : uint8_t {
@@ -72,6 +74,7 @@ class Sensor
 
    Adafruit_BNO055 m_sensor;
    Data m_data{};
+   Calibration m_calibration_status{};
 };
 } // namespace gpio_bridge::imu
 #endif // GPIO_BRIDGE_IMU_HPP
