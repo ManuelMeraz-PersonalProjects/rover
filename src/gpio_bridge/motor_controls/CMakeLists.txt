@@ -26,7 +26,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 find_package(ament_cmake REQUIRED)
-find_package(Threads REQUIRED)
 find_package(OdroidGPIO REQUIRED)
 
 find_package(controller_interface REQUIRED)
@@ -47,7 +46,6 @@ add_library(motor_controls
 target_link_libraries(motor_controls
         PUBLIC
         OdroidGPIO
-        Threads::Threads
         controller_interface
         rclcpp)
 
@@ -58,7 +56,6 @@ target_include_directories(motor_controls
 
 ament_export_targets(export_motor_controls HAS_LIBRARY_TARGET)
 ament_export_dependencies(OdroidGPIO)
-ament_export_dependencies(Threads)
 ament_export_dependencies(rclcpp)
 ament_export_dependencies(controller_interface)
 
