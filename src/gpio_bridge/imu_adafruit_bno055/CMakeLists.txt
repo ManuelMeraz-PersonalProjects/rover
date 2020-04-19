@@ -33,7 +33,7 @@ add_library(imu_adafruit_bno055
         src/IMU.cpp)
 
 target_link_libraries(imu_adafruit_bno055
-        PRIVATE
+        PUBLIC
         OdroidAdafruitBNO055)
 
 target_include_directories(imu_adafruit_bno055
@@ -46,7 +46,6 @@ ament_export_targets(export_imu_adafruit_bno055 HAS_LIBRARY_TARGET)
 install(DIRECTORY include/
         DESTINATION include)
 
-# need to export rclcpp and controller_interface for some reason
 install(TARGETS imu_adafruit_bno055
         EXPORT export_imu_adafruit_bno055
         LIBRARY DESTINATION lib
@@ -55,48 +54,23 @@ install(TARGETS imu_adafruit_bno055
         INCLUDES DESTINATION include)
 
 if(BUILD_TESTING)
-	find_package(ament_lint_auto REQUIRED)
-	ament_lint_auto_find_test_dependencies()
-	list(APPEND test
-		sensorapi
-		read_all_data
-		rawdata
-		position)
+    find_package(ament_lint_auto REQUIRED)
+    ament_lint_auto_find_test_dependencies()
 
-	foreach(test IN LISTS tests)
-		add_executable(${test} test/${test}/${test}.cpp)
-		target_link_libraries(${test} PRIVATE OdroidAdafruitBNO055)
-	endforeach()
+    list(APPEND tests
+            sensorapi
+            read_all_data
+            rawdata
+            position)
 
-    #find_package(controller_manager REQUIRED)
-    #add_library(controller_manager INTERFACE)
-    #target_link_libraries(controller_manager INTERFACE ${controller_manager_LIBRARIES})
-    #target_include_directories(controller_manager INTERFACE ${controller_manager_INCLUDE_DIRS})
+    foreach(test IN LISTS tests)
+        add_executable(${test} test/${test}.cpp)
+        target_link_libraries(${test} PRIVATE OdroidAdafruitBNO055)
+    endforeach()
 
-    #find_package(diff_drive_controller REQUIRED)
-    #add_library(diff_drive_controller INTERFACE)
-    #target_link_libraries(diff_drive_controller INTERFACE ${diff_drive_controller_LIBRARIES})
-    #target_include_directories(diff_drive_controller INTERFACE ${diff_drive_controller_INCLUDE_DIRS})
-
-    #find_package(joint_state_controller REQUIRED)
-    #add_library(joint_state_controller INTERFACE)
-    #target_link_libraries(joint_state_controller INTERFACE ${joint_state_controller_LIBRARIES})
-    #target_include_directories(joint_state_controller INTERFACE ${joint_state_controller_INCLUDE_DIRS})
-
-    #add_executable(test_imu_adafruit_bno055 test/test_imu_adafruit_bno055.cpp)
-    #add_test(NAME test_imu_adafruit_bno055 COMMAND test_imu_adafruit_bno055)
-    #target_link_libraries(test_imu_adafruit_bno055 PRIVATE imu_adafruit_bno055)
-
-    #add_executable(test_hardware_interface test/test_hardware_interface.cpp)
-    #add_test(NAME test_hardware_interface COMMAND test_hardware_interface)
-    #target_link_libraries(test_hardware_interface PRIVATE imu_adafruit_bno055 diff_drive_controller controller_manager joint_state_controller)
-    #ament_export_dependencies(ros_controllers)
-    #ament_export_dependencies(controller_manager)
-
-    #install(TARGETS controller_manager
-        #EXPORT export_imu_adafruit_bno055)
+    add_executable(test_imu test/test_imu.cpp)
+    target_link_libraries(test_imu PRIVATE imu_adafruit_bno055)
 
 endif()
-
 
 ament_package()
