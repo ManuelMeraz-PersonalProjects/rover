@@ -1,27 +1,23 @@
 #ifndef GPIO_BRIDGE_IMU_HPP
 #define GPIO_BRIDGE_IMU_HPP
 
+#include "Data.hpp"
+
 #include <Adafruit_BNO055.h>
 #include <chrono>
 
-namespace gpio_bridge {
-namespace imu {
-constexpr std::chrono::milliseconds BNO055_SAMPLE_RATE{100};
+namespace gpio_bridge::imu {
+constexpr std::chrono::milliseconds IMU_SAMPLE_RATE{100};
 
-struct Data
-{
-   // some data
-};
-
-class IMU
+class Sensor
 {
  public:
-   IMU(const IMU&) = delete;
-   IMU(IMU&&) = delete;
-   auto operator=(const IMU&) -> IMU& = delete;
-   auto operator=(IMU &&) -> IMU& = delete;
+   Sensor(const Sensor&) = delete;
+   Sensor(Sensor&&) = delete;
+   auto operator=(const Sensor&) -> Sensor& = delete;
+   auto operator=(Sensor &&) -> Sensor& = delete;
 
-   static auto get() -> IMU&;
+   static auto get() -> Sensor&;
    auto data() -> const Data&;
 
  private:
@@ -70,13 +66,12 @@ class IMU
    static constexpr auto ODROID_N2_I2C_ADDRESS = 0x28;
    static constexpr auto UNIQUE_IMU_ID = 1;
 
-   IMU();
+   Sensor();
 
    auto handle_results(const StatusResults& results) -> bool;
 
    Adafruit_BNO055 m_sensor;
    Data m_data{};
 };
-} // namespace imu
-} // namespace gpio_bridge
+} // namespace gpio_bridge::imu
 #endif // GPIO_BRIDGE_IMU_HPP

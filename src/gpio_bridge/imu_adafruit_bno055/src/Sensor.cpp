@@ -1,11 +1,11 @@
-#include "imu/IMU.hpp"
+#include "gpio_bridge/imu/Sensor.hpp"
 
 #include <iostream>
 #include <sstream>
 
 using namespace std::chrono_literals;
 namespace gpio_bridge::imu {
-IMU::IMU() : m_sensor(UNIQUE_IMU_ID, ODROID_N2_I2C_ADDRESS)
+Sensor::Sensor() : m_sensor(UNIQUE_IMU_ID, ODROID_N2_I2C_ADDRESS)
 {
    bool initializing = true;
    while (initializing) {
@@ -15,21 +15,26 @@ IMU::IMU() : m_sensor(UNIQUE_IMU_ID, ODROID_N2_I2C_ADDRESS)
                                reinterpret_cast<uint8_t*>(&results.system_error));
 
       initializing = handle_results(results);
+      if (!initializing) {
+         gpio::sleep(IMU_SAMPLE_RATE);
+      }
    }
+
+   m_sensor.setExtCrystalUse(true);
 }
 
-auto IMU::get() -> IMU&
+auto Sensor::get() -> Sensor&
 {
-   static IMU imu;
+   static Sensor imu;
    return imu;
 }
 
-auto IMU::data() -> const Data&
+auto Sensor::data() -> const Data&
 {
    return m_data;
 }
 
-auto IMU::handle_results(const StatusResults& results) -> bool
+auto Sensor::handle_results(const StatusResults& results) -> bool
 {
    bool initializing{true};
    bool error{false};

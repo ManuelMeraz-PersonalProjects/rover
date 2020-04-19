@@ -1,7 +1,8 @@
-#include <imu/IMU.hpp>
+#include <gpio_bridge/imu/Sensor.hpp>
 
-int main()
+auto main() -> int
 {
-   auto& imu = gpio_bridge::imu::IMU::get();
+   namespace imu = gpio_bridge::imu;
+   auto& sensor = imu::Sensor::get();
    return 0;
 }
