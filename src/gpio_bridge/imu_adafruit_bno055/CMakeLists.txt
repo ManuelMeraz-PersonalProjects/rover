@@ -28,53 +28,44 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 find_package(ament_cmake REQUIRED)
 find_package(OdroidAdafruitBNO055 REQUIRED)
 
-#add_library(imu_adafruit_bno055
-        #SHARED
-        #src/Motor.cpp
-        #src/MotorController.cpp)
+add_library(imu_adafruit_bno055
+        SHARED
+        src/IMU.cpp)
 
-#target_link_libraries(imu_adafruit_bno055
-        #PUBLIC
-        #OdroidGPIO
-        #Threads::Threads
-        #controller_interface
-        #rclcpp)
+target_link_libraries(imu_adafruit_bno055
+        PRIVATE
+        OdroidAdafruitBNO055)
 
-#target_include_directories(imu_adafruit_bno055
-        #PUBLIC
-        #$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-        #$<INSTALL_INTERFACE:include>)
+target_include_directories(imu_adafruit_bno055
+        PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
-#ament_export_targets(export_imu_adafruit_bno055 HAS_LIBRARY_TARGET)
+ament_export_targets(export_imu_adafruit_bno055 HAS_LIBRARY_TARGET)
 
-#install(DIRECTORY include/
-        #DESTINATION include)
+install(DIRECTORY include/
+        DESTINATION include)
 
 # need to export rclcpp and controller_interface for some reason
-#install(TARGETS rclcpp
-        #EXPORT export_imu_adafruit_bno055)
-
-#install(TARGETS imu_adafruit_bno055
-        #EXPORT export_imu_adafruit_bno055
-        #LIBRARY DESTINATION lib
-        #ARCHIVE DESTINATION lib
-        #RUNTIME DESTINATION bin
-        #INCLUDES DESTINATION include)
+install(TARGETS imu_adafruit_bno055
+        EXPORT export_imu_adafruit_bno055
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include)
 
 if(BUILD_TESTING)
 	find_package(ament_lint_auto REQUIRED)
 	ament_lint_auto_find_test_dependencies()
-	list(APPEND examples
+	list(APPEND test
 		sensorapi
-		restore_offsets
 		read_all_data
 		rawdata
-		position
-		bunny)
+		position)
 
-	foreach(example IN LISTS examples)
-		add_executable(${example} examples/${example}/${example}.cpp)
-		target_link_libraries(${example} PRIVATE OdroidAdafruitBNO055)
+	foreach(test IN LISTS tests)
+		add_executable(${test} test/${test}/${test}.cpp)
+		target_link_libraries(${test} PRIVATE OdroidAdafruitBNO055)
 	endforeach()
 
     #find_package(controller_manager REQUIRED)

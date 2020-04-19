@@ -2,6 +2,7 @@
 #include <Adafruit_Sensor.h>
 #include <iomanip>
 #include <iostream>
+#include <utility/imumaths.h>
 
 /* This driver uses the Adafruit unified sensor library (Adafruit_Sensor),
    which provides a common 'type' for sensor data and some helper functions.
@@ -17,18 +18,19 @@
 
    Connections
    ===========
-   Connect SCL to analog 5
-   Connect SDA to analog 4
-   Connect VDD to 3-5V DC
+   Connect SCL to SCL pin (analog 5 on Arduino UNO)
+   Connect SDA to SDA pin (analog 4 on Arduino UNO)
+   Connect VDD to 3-5V DC (depending on your board's logic level)
    Connect GROUND to common ground
 
    History
    =======
    2015/MAR/03  - First release (KTOWN)
    2015/AUG/27  - Added calibration and system status helpers
-   2015/NOV/13  - Added calibration save and restore
-   */
+*/
+
 using namespace std::chrono_literals;
+
 /* Set the delay between fresh samples */
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
@@ -61,7 +63,7 @@ void displaySensorDetails(void)
 /**************************************************************************/
 /*
     Display some basic info about the sensor status
-    */
+*/
 /**************************************************************************/
 void displaySensorStatus(void)
 {
@@ -73,11 +75,11 @@ void displaySensorStatus(void)
    /* Display the results in the Serial Monitor */
    std::cout << std::endl;
    std::cout << "System Status: 0x";
-   std::cout << std::hex << system_status << std::endl;
+   std::cout << std::hex << static_cast<uint16_t>(system_status) << std::endl;
    std::cout << "Self Test:     0x";
-   std::cout << std::hex << self_test_results << std::endl;
+   std::cout << std::hex << static_cast<uint16_t>(self_test_results) << std::endl;
    std::cout << "System Error:  0x";
-   std::cout << std::hex << system_error << std::endl;
+   std::cout << std::hex << static_cast<uint16_t>(system_error) << std::endl;
    std::cout << std::endl;
    gpio::sleep(500ms);
 }
@@ -98,60 +100,30 @@ void displayCalStatus(void)
 
    /* The data should be ignored until the system calibration is > 0 */
    std::cout << "\t";
-   if (!system) {
-      std::cout << "! ";
+   if (system == 0u) {
+      std::cout << "Not calibrated: ";
    }
 
    /* Display the individual values */
    std::cout << "Sys:";
-   std::cout << std::dec << system;
+   std::cout << std::dec << static_cast<uint16_t>(system);
    std::cout << " G:";
-   std::cout << std::dec << gyro;
+   std::cout << std::dec << static_cast<uint16_t>(gyro);
    std::cout << " A:";
-   std::cout << std::dec << accel;
+   std::cout << std::dec << static_cast<uint16_t>(accel);
    std::cout << " M:";
-   std::cout << std::dec << mag;
+   std::cout << std::dec << static_cast<uint16_t>(mag);
 }
 
 /**************************************************************************/
 /*
-    Display the raw calibration offset and radius data
-    */
-/**************************************************************************/
-void displaySensorOffsets(const adafruit_bno055_offsets_t& calibData)
-{
-   std::cout << "Accelerometer: ";
-   std::cout << calibData.accel_offset_x << " ";
-   std::cout << calibData.accel_offset_y << " ";
-   std::cout << calibData.accel_offset_z << " ";
-
-   std::cout << "\nGyro: ";
-   std::cout << calibData.gyro_offset_x << " ";
-   std::cout << calibData.gyro_offset_y << " ";
-   std::cout << calibData.gyro_offset_z << " ";
-
-   std::cout << "\nMag: ";
-   std::cout << calibData.mag_offset_x << " ";
-   std::cout << calibData.mag_offset_y << " ";
-   std::cout << calibData.mag_offset_z << " ";
-
-   std::cout << "\nAccel Radius: ";
-   std::cout << calibData.accel_radius;
-
-   std::cout << "\nMag Radius: ";
-   std::cout << calibData.mag_radius;
-}
-
-/**************************************************************************/
-/*
-    Arduino setup function (automatically called at startup)
-    */
+    Arduino loop function, called once 'setup' is complete (your own code
+    should go here)
+*/
 /**************************************************************************/
 auto main() -> int
 {
    std::cout << "Orientation Sensor Test" << std::endl;
-   std::cout << std::endl;
-
    /* Initialise the sensor */
    if (!bno.begin()) {
       /* There was a problem detecting the BNO055 ... check your connections */
@@ -159,14 +131,7 @@ auto main() -> int
       return 1;
    }
 
-   adafruit_bno055_offsets_t calibrationData;
-   sensor_t sensor;
-
-   /*
-    *  Look for the sensor's unique ID at the beginning oF EEPROM.
-    *  This isn't foolproof, but it's better than nothing.
-    */
-   bno.getSensor(&sensor);
+   gpio::sleep(1000ms);
 
    /* Display some basic information on this sensor */
    displaySensorDetails();
@@ -174,41 +139,7 @@ auto main() -> int
    /* Optional: Display current status */
    displaySensorStatus();
 
-   /* Crystal must be configured AFTER loading calibration data into BNO055. */
    bno.setExtCrystalUse(true);
-
-   sensors_event_t event;
-   bno.getEvent(&event);
-   std::cout << "Please Calibrate Sensor: " << std::endl;
-   while (!bno.isFullyCalibrated()) {
-      bno.getEvent(&event);
-
-      std::cout << "X: ";
-      std::cout << std::setprecision(4) << event.orientation.x;
-      std::cout << "\tY: ";
-      std::cout << std::setprecision(4) << event.orientation.y;
-      std::cout << "\tZ: ";
-      std::cout << std::setprecision(4) << event.orientation.z;
-
-      /* Optional: Display calibration status */
-      displayCalStatus();
-
-      /* New line for the next sample */
-      std::cout << std::endl;
-
-      /* Wait the specified delay before requesting new data */
-      gpio::sleep(std::chrono::milliseconds(BNO055_SAMPLERATE_DELAY_MS));
-   }
-
-   std::cout << "\nFully calibrated!";
-   std::cout << "--------------------------------";
-   std::cout << "Calibration Results: ";
-   adafruit_bno055_offsets_t newCalib;
-   bno.getSensorOffsets(newCalib);
-   displaySensorOffsets(newCalib);
-
-   std::cout << "\n--------------------------------\n" << std::endl;
-   gpio::sleep(500ms);
    while (true) {
       /* Get a new sensor event */
       sensors_event_t event;
@@ -226,12 +157,12 @@ auto main() -> int
       displayCalStatus();
 
       /* Optional: Display sensor status (debug only) */
-      // displaySensorStatus();
+      displaySensorStatus();
 
       /* New line for the next sample */
       std::cout << std::endl;
 
-      /* Wait the specified delay before requesting new data */
+      /* Wait the specified delay before requesting nex data */
       gpio::sleep(std::chrono::milliseconds(BNO055_SAMPLERATE_DELAY_MS));
    }
 }
