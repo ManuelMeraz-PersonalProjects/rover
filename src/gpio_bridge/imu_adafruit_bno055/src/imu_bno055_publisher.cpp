@@ -37,15 +37,18 @@ class IMUBNO055Publisher : public rclcpp::Node
       imu_message.linear_acceleration.x = data.linear_acceleration.x();
       imu_message.linear_acceleration.y = data.linear_acceleration.y();
       imu_message.linear_acceleration.z = data.linear_acceleration.z();
+      imu_message.linear_acceleration_covariance = m_linear_acceleration_covariance;
 
       imu_message.orientation.w = data.quaternion.w();
       imu_message.orientation.x = data.quaternion.x();
       imu_message.orientation.y = data.quaternion.y();
       imu_message.orientation.z = data.quaternion.z();
+      imu_message.orientation_covariance = m_orientation_covariance;
 
       imu_message.angular_velocity.x = data.gyroscope.x();
       imu_message.angular_velocity.y = data.gyroscope.y();
       imu_message.angular_velocity.z = data.gyroscope.z();
+      imu_message.angular_velocity_covariance = m_angular_velocity_covariance;
 
       m_imu_publisher->publish(imu_message);
 
@@ -63,6 +66,13 @@ class IMUBNO055Publisher : public rclcpp::Node
    rclcpp::TimerBase::SharedPtr m_timer{};
    rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr m_imu_publisher{};
    rclcpp::Publisher<sensor_msgs::msg::MagneticField>::SharedPtr m_magnetic_field_publisher{};
+
+   /* +- 2.5 deg */
+   std::array<double, 9> m_linear_acceleration_covariance{0.60, 0, 0, 0, 0.60, 0, 0, 0, 0.60};
+   /* +- 3 deg/s */
+   std::array<double, 9> m_orientation_covariance{0.002, 0, 0, 0, 0.002, 0, 0, 0, 0.002};
+   /* +- 80mg */
+   std::array<double, 9> m_angular_velocity_covariance{0.003, 0, 0, 0, 0.003, 0, 0, 0, 0.003};
 };
 
 int main(int argc, char* argv[])

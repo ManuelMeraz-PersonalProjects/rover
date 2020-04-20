@@ -32,43 +32,14 @@ auto Sensor::get() -> Sensor&
 auto Sensor::data() -> const Data&
 {
    m_data.accelerometer = m_sensor.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-   m_statistics.accelerometer[0].push(m_data.accelerometer.x());
-   m_statistics.accelerometer[1].push(m_data.accelerometer.y());
-   m_statistics.accelerometer[2].push(m_data.accelerometer.z());
-
    m_data.magnetometer = m_sensor.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
-   m_statistics.magnetometer[0].push(m_data.magnetometer.x());
-   m_statistics.magnetometer[1].push(m_data.magnetometer.y());
-   m_statistics.magnetometer[2].push(m_data.magnetometer.z());
-
    m_data.gyroscope = m_sensor.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
-   m_statistics.gyroscope[0].push(m_data.gyroscope.x());
-   m_statistics.gyroscope[1].push(m_data.gyroscope.y());
-   m_statistics.gyroscope[2].push(m_data.gyroscope.z());
-
    m_data.euler = m_sensor.getVector(Adafruit_BNO055::VECTOR_EULER);
-   m_statistics.euler[0].push(m_data.euler.x());
-   m_statistics.euler[1].push(m_data.euler.y());
-   m_statistics.euler[2].push(m_data.euler.z());
-
    m_data.linear_acceleration = m_sensor.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
-   m_statistics.linear_acceleration[0].push(m_data.linear_acceleration.x());
-   m_statistics.linear_acceleration[1].push(m_data.linear_acceleration.y());
-   m_statistics.linear_acceleration[2].push(m_data.linear_acceleration.z());
-
    m_data.gravity = m_sensor.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
-   m_statistics.gravity[0].push(m_data.gravity.x());
-   m_statistics.gravity[1].push(m_data.gravity.y());
-   m_statistics.gravity[2].push(m_data.gravity.z());
 
    m_data.quaternion = m_sensor.getQuat();
-   m_statistics.quaternion[0].push(m_data.quaternion.w());
-   m_statistics.quaternion[1].push(m_data.quaternion.x());
-   m_statistics.quaternion[2].push(m_data.quaternion.y());
-   m_statistics.quaternion[2].push(m_data.quaternion.z());
-
    m_data.temperature = m_sensor.getTemp();
-   m_statistics.temperature.push(m_data.temperature);
    return m_data;
 }
 
@@ -188,10 +159,4 @@ auto Sensor::calibration_status() -> const Calibration&
 
    return m_calibration_status;
 }
-
-auto Sensor::statistics() -> const Statistics&
-{
-   return m_statistics;
-}
-
 } // namespace gpio_bridge::imu
