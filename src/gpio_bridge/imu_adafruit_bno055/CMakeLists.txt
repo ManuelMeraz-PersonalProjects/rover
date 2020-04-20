@@ -28,6 +28,26 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 find_package(ament_cmake REQUIRED)
 find_package(OdroidAdafruitBNO055 REQUIRED)
 
+find_package(rclcpp REQUIRED)
+add_library(rclcpp INTERFACE)
+target_link_libraries(rclcpp INTERFACE ${rclcpp_LIBRARIES})
+target_include_directories(rclcpp INTERFACE ${rclcpp_INCLUDE_DIRS})
+
+find_package(sensor_msgs REQUIRED)
+add_library(sensor_msgs INTERFACE)
+target_link_libraries(sensor_msgs INTERFACE ${sensor_msgs_LIBRARIES})
+target_include_directories(sensor_msgs INTERFACE ${sensor_msgs_INCLUDE_DIRS})
+
+find_package(geometry_msgs REQUIRED)
+add_library(geometry_msgs INTERFACE)
+target_link_libraries(geometry_msgs INTERFACE ${geometry_msgs_LIBRARIES})
+target_include_directories(geometry_msgs INTERFACE ${geometry_msgs_INCLUDE_DIRS})
+
+find_package(std_msgs REQUIRED)
+add_library(std_msgs INTERFACE)
+target_link_libraries(std_msgs INTERFACE ${std_msgs_LIBRARIES})
+target_include_directories(std_msgs INTERFACE ${std_msgs_INCLUDE_DIRS})
+
 add_library(imu_adafruit_bno055
         SHARED
         src/Sensor.cpp
@@ -43,17 +63,17 @@ target_include_directories(imu_adafruit_bno055
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-ament_export_targets(export_imu_adafruit_bno055 HAS_LIBRARY_TARGET)
+add_executable(imu_bno055_publisher src/imu_bno055_publisher.cpp)
+target_link_libraries(imu_bno055_publisher PRIVATE imu_adafruit_bno055 rclcpp sensor_msgs geometry_msgs std_msgs)
 
-install(DIRECTORY include/
-        DESTINATION include)
+install(TARGETS
+        imu_bno055_publisher
+        DESTINATION lib/${PROJECT_NAME})
 
-install(TARGETS imu_adafruit_bno055
-        EXPORT export_imu_adafruit_bno055
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin
-        INCLUDES DESTINATION include)
+install(
+        DIRECTORY launch
+        DESTINATION share/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
