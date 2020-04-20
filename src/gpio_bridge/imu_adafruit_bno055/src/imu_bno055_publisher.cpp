@@ -1,6 +1,5 @@
 #include "gpio_bridge/imu/Sensor.hpp"
 
-#include <chrono>
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/imu.hpp>
@@ -56,6 +55,8 @@ class IMUBNO055Publisher : public rclcpp::Node
       magnetic_field_message.magnetic_field.x = data.magnetometer.x();
       magnetic_field_message.magnetic_field.y = data.magnetometer.y();
       magnetic_field_message.magnetic_field.z = data.magnetometer.z();
+
+      m_magnetic_field_publisher->publish(magnetic_field_message);
    }
 
    gpio_bridge::imu::Sensor& m_sensor{gpio_bridge::imu::Sensor::get()};

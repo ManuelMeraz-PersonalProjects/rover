@@ -9,6 +9,7 @@ auto main() -> int
    while (true) {
       std::cout << sensor.calibration_status() << std::endl;
       std::cout << sensor.data() << std::endl;
+      std::cout << sensor.statistics() << std::endl;
       gpio::sleep(gpio_bridge::imu::IMU_SAMPLE_RATE);
    }
    return 0;

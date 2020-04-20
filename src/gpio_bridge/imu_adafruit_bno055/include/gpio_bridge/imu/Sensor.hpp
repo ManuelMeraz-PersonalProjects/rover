@@ -3,6 +3,7 @@
 
 #include "Calibration.hpp"
 #include "Data.hpp"
+#include "Statistics.hpp"
 
 #include <Adafruit_BNO055.h>
 #include <chrono>
@@ -20,6 +21,7 @@ class Sensor
 
    static auto get() -> Sensor&;
    auto data() -> const Data&;
+   auto statistics() -> const Statistics&;
    auto calibration_status() -> const Calibration&;
 
  private:
@@ -70,10 +72,11 @@ class Sensor
 
    Sensor();
 
-   auto handle_results(const StatusResults& results) -> bool;
+   static auto handle_results(const StatusResults& results) -> bool;
 
    Adafruit_BNO055 m_sensor;
    Data m_data{};
+   Statistics m_statistics{};
    Calibration m_calibration_status{};
 };
 } // namespace gpio_bridge::imu

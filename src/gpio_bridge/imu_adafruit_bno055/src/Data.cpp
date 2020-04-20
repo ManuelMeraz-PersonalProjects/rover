@@ -3,7 +3,7 @@
 namespace gpio_bridge::imu {
 auto operator<<(std::ostream& os, const Data& data) -> std::ostream&
 {
-   os << std::setprecision(3) << std::right << std::setw(5) << std::fixed;
+   os << std::setprecision(3) << std::fixed;
 
    os << "Accelerometer (m/s^2)         {" << data.accelerometer.x() << ", " << data.accelerometer.y() << " ,"
       << data.accelerometer.z() << "}" << std::endl;

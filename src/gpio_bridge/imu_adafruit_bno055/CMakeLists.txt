@@ -52,7 +52,9 @@ add_library(imu_adafruit_bno055
         SHARED
         src/Sensor.cpp
         src/Data.cpp
-        src/Calibration.cpp)
+        src/Calibration.cpp
+        src/RunningStatistic.cpp
+        src/Statistics.cpp)
 
 target_link_libraries(imu_adafruit_bno055
         PUBLIC
