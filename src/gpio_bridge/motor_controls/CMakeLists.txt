@@ -38,6 +38,16 @@ add_library(rclcpp INTERFACE)
 target_link_libraries(rclcpp INTERFACE ${rclcpp_LIBRARIES})
 target_include_directories(rclcpp INTERFACE ${rclcpp_INCLUDE_DIRS})
 
+find_package(geometry_msgs REQUIRED)
+add_library(geometry_msgs INTERFACE)
+target_link_libraries(geometry_msgs INTERFACE ${geometry_msgs_LIBRARIES})
+target_include_directories(geometry_msgs INTERFACE ${geometry_msgs_INCLUDE_DIRS})
+
+find_package(std_msgs REQUIRED)
+add_library(std_msgs INTERFACE)
+target_link_libraries(std_msgs INTERFACE ${std_msgs_LIBRARIES})
+target_include_directories(std_msgs INTERFACE ${std_msgs_INCLUDE_DIRS})
+
 add_library(motor_controls
         SHARED
         src/Motor.cpp
@@ -105,8 +115,12 @@ if(BUILD_TESTING)
     ament_export_dependencies(ros_controllers)
     ament_export_dependencies(controller_manager)
 
+    add_executable(cmd_vel_publisher test/cmd_vel_publisher.cpp)
+    add_test(NAME cmd_vel_publisher COMMAND cmd_vel_publisher)
+    target_link_libraries(cmd_vel_publisher PRIVATE rclcpp geometry_msgs std_msgs)
+
     install(TARGETS controller_manager
-        EXPORT export_motor_controls)
+            EXPORT export_motor_controls)
 
 endif()
 
