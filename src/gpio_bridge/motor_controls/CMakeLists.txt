@@ -28,40 +28,23 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 find_package(ament_cmake REQUIRED)
 find_package(OdroidGPIO REQUIRED)
 
-find_package(controller_interface REQUIRED)
-add_library(controller_interface INTERFACE)
-target_link_libraries(controller_interface INTERFACE ${controller_interface_LIBRARIES})
-target_include_directories(controller_interface INTERFACE ${controller_interface_INCLUDE_DIRS})
+# Can't use ament_target_dependencies here, so need to manually
+# create targets for ros2 dependencies
+list(APPEND ros2_dependencies
+        rclcpp
+        controller_interface
+        controller_manager
+        diff_drive_controller
+        joint_state_controller
+        std_msgs)
 
-find_package(rclcpp REQUIRED)
-add_library(rclcpp INTERFACE)
-target_link_libraries(rclcpp INTERFACE ${rclcpp_LIBRARIES})
-target_include_directories(rclcpp INTERFACE ${rclcpp_INCLUDE_DIRS})
-
-find_package(geometry_msgs REQUIRED)
-add_library(geometry_msgs INTERFACE)
-target_link_libraries(geometry_msgs INTERFACE ${geometry_msgs_LIBRARIES})
-target_include_directories(geometry_msgs INTERFACE ${geometry_msgs_INCLUDE_DIRS})
-
-find_package(std_msgs REQUIRED)
-add_library(std_msgs INTERFACE)
-target_link_libraries(std_msgs INTERFACE ${std_msgs_LIBRARIES})
-target_include_directories(std_msgs INTERFACE ${std_msgs_INCLUDE_DIRS})
-
-find_package(controller_manager REQUIRED)
-add_library(controller_manager INTERFACE)
-target_link_libraries(controller_manager INTERFACE ${controller_manager_LIBRARIES})
-target_include_directories(controller_manager INTERFACE ${controller_manager_INCLUDE_DIRS})
-
-find_package(diff_drive_controller REQUIRED)
-add_library(diff_drive_controller INTERFACE)
-target_link_libraries(diff_drive_controller INTERFACE ${diff_drive_controller_LIBRARIES})
-target_include_directories(diff_drive_controller INTERFACE ${diff_drive_controller_INCLUDE_DIRS})
-
-find_package(joint_state_controller REQUIRED)
-add_library(joint_state_controller INTERFACE)
-target_link_libraries(joint_state_controller INTERFACE ${joint_state_controller_LIBRARIES})
-target_include_directories(joint_state_controller INTERFACE ${joint_state_controller_INCLUDE_DIRS})
+# create targets from ros 2 packages
+foreach(dep IN LISTS ros2_dependencies)
+    find_package(${dep} REQUIRED)
+    add_library(${dep} INTERFACE)
+    target_link_libraries(${dep} INTERFACE ${${dep}_LIBRARIES})
+    target_include_directories(${dep} INTERFACE ${${dep}_INCLUDE_DIRS})
+endforeach()
 
 add_library(motor_controls
         SHARED
@@ -83,8 +66,12 @@ target_include_directories(motor_controls
         $<INSTALL_INTERFACE:include>)
 
 add_executable(diff_drive_controller_node src/diff_drive_controller_node.cpp)
-target_link_libraries(diff_drive_controller_node motor_controls diff_drive_controller controller_manager joint_state_controller)
-ament_target_dependencies(diff_drive_controller_node diff_drive_controller controller_manager joint_state_controller)
+target_link_libraries(diff_drive_controller_node
+        PRIVATE
+        motor_controls
+        diff_drive_controller
+        controller_manager
+        joint_state_controller)
 
 ament_export_targets(export_motor_controls)
 ament_export_dependencies(rclcpp)
@@ -97,12 +84,6 @@ install(DIRECTORY include/
         DESTINATION include)
 
 # need to export rclcpp and controller_interface for some reason
-install(TARGETS rclcpp
-        EXPORT export_motor_controls)
-
-install(TARGETS controller_interface
-        EXPORT export_motor_controls)
-
 install(TARGETS diff_drive_controller_node
         EXPORT export_motor_controls
         LIBRARY DESTINATION lib
@@ -110,10 +91,14 @@ install(TARGETS diff_drive_controller_node
         RUNTIME DESTINATION bin
         INCLUDES DESTINATION include)
 
-
 if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
     ament_lint_auto_find_test_dependencies()
+
+    find_package(geometry_msgs REQUIRED)
+    add_library(geometry_msgs INTERFACE)
+    target_link_libraries(geometry_msgs INTERFACE ${geometry_msgs_LIBRARIES})
+    target_include_directories(geometry_msgs INTERFACE ${geometry_msgs_INCLUDE_DIRS})
 
     add_executable(test_motor_controls test/test_motor_controls.cpp)
     add_test(NAME test_motor_controls COMMAND test_motor_controls)
@@ -131,6 +116,5 @@ if(BUILD_TESTING)
             EXPORT export_motor_controls)
 
 endif()
-
 
 ament_package()
