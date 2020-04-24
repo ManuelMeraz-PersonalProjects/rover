@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 
    // initialize the robot
    if (motor_controller->init() != hardware_interface::HW_RET_OK) {
-      std::cerr << "failed to initialized yumi hardware\n";
+      RCLCPP_ERROR(logger, "failed to initialized yumi hardware");
       return 1;
    } else {
       RCLCPP_INFO(logger, "Initialized motor motor.");

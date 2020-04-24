@@ -1,6 +1,5 @@
 #include "motor_controls/Motor.hpp"
 
-#include <iostream>
 #include <odroid/gpio.hpp>
 
 namespace {

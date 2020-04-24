@@ -1,7 +1,6 @@
 #include "motor_controls/motor_controls.hpp"
 
 #include <chrono>
-#include <iostream>
 #include <rclcpp/rclcpp.hpp>
 
 using namespace std::chrono_literals;
