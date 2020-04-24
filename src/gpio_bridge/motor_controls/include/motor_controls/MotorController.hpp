@@ -29,10 +29,6 @@ class MotorController : public hardware_interface::RobotHardware
  public:
    using sPtr = std::shared_ptr<MotorController>;
 
-   // Please do not call this constructor/destructor
-   MotorController();
-   ~MotorController() override = default;
-
    MotorController(const MotorController&) = delete;
    MotorController(MotorController&&) = delete;
    auto operator=(const MotorController&) -> MotorController& = delete;
@@ -66,6 +62,10 @@ class MotorController : public hardware_interface::RobotHardware
     * \brief Stop both motors.
     */
    void stop();
+
+ protected:
+   MotorController();
+   ~MotorController() override = default;
 
  private:
    Motor::uPtr m_left_motor{};

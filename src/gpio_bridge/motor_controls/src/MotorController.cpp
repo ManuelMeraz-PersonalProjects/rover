@@ -10,8 +10,13 @@ namespace pwm = gpio::pwm;
 
 namespace {
 
+// this is a bit hacky, but the derived class can make allocate a new motor controller
+// but motor controller can't because the constructors are private within that context
+struct make_shared_enabler : public motor_controls::MotorController
+{
+};
 // globals
-std::shared_ptr<motor_controls::MotorController> g_controller{nullptr};
+std::shared_ptr<make_shared_enabler> g_controller{nullptr};
 
 constexpr uint8_t DIR1_WIRING_PI_PIN{21};
 constexpr uint8_t DIR2_WIRING_PI_PIN{22};
@@ -135,8 +140,8 @@ auto motor_controls::MotorController::get() -> motor_controls::MotorController&
 auto motor_controls::MotorController::pointer() -> std::shared_ptr<MotorController>
 {
    if (g_controller == nullptr) {
-      g_controller = std::make_shared<MotorController>();
+      g_controller = std::make_shared<make_shared_enabler>();
    }
 
-   return g_controller;
+   return static_cast<std::shared_ptr<MotorController>>(g_controller);
 }
