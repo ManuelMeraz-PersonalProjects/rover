@@ -7,3 +7,6 @@
 [submodule "src/control_msgs"]
 	path = src/control_msgs
 	url = https://github.com/ros-controls/control_msgs.git
+[submodule "src/ros2_controllers"]
+	path = src/ros2_controllers
+	url = git@github.com:ManuelMeraz/ros2_controllers.git
