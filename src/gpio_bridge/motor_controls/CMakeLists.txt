@@ -69,8 +69,11 @@ add_library(motor_controls
         src/MotorController.cpp)
 
 target_link_libraries(motor_controls
-        PUBLIC
         OdroidGPIO
+        controller_interface
+        rclcpp)
+
+ament_target_dependencies(motor_controls
         controller_interface
         rclcpp)
 
@@ -80,15 +83,15 @@ target_include_directories(motor_controls
         $<INSTALL_INTERFACE:include>)
 
 add_executable(diff_drive_controller_node src/diff_drive_controller_node.cpp)
-target_link_libraries(diff_drive_controller_node PRIVATE motor_controls diff_drive_controller controller_manager joint_state_controller)
+target_link_libraries(diff_drive_controller_node motor_controls diff_drive_controller controller_manager joint_state_controller)
+ament_target_dependencies(diff_drive_controller_node diff_drive_controller controller_manager joint_state_controller)
 
 ament_export_targets(export_motor_controls)
-ament_export_dependencies(OdroidGPIO)
-ament_export_dependencies(ros_controllers)
-ament_export_dependencies(controller_manager)
 ament_export_dependencies(rclcpp)
+ament_export_dependencies(controller_manager)
 ament_export_dependencies(controller_interface)
-ament_export_dependencies(motor_controller)
+ament_export_dependencies(joint_state_controller)
+ament_export_dependencies(diff_drive_controller)
 
 install(DIRECTORY include/
         DESTINATION include)
@@ -107,6 +110,7 @@ install(TARGETS diff_drive_controller_node
         RUNTIME DESTINATION bin
         INCLUDES DESTINATION include)
 
+
 if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
     ament_lint_auto_find_test_dependencies()
@@ -118,8 +122,6 @@ if(BUILD_TESTING)
     add_executable(test_hardware_interface test/test_hardware_interface.cpp)
     add_test(NAME test_hardware_interface COMMAND test_hardware_interface)
     target_link_libraries(test_hardware_interface PRIVATE motor_controls diff_drive_controller controller_manager joint_state_controller)
-    ament_export_dependencies(ros_controllers)
-    ament_export_dependencies(controller_manager)
 
     add_executable(cmd_vel_publisher test/cmd_vel_publisher.cpp)
     add_test(NAME cmd_vel_publisher COMMAND cmd_vel_publisher)

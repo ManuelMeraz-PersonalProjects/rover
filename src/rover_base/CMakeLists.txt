@@ -29,10 +29,6 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(controller_interface REQUIRED)
 
-ament_export_dependencies(rclcpp)
-ament_export_dependencies(std_msgs)
-ament_export_dependencies(controller_interface)
-
 list(APPEND nodes rover_node talker listener)
 
 foreach(node IN LISTS nodes)
@@ -45,6 +41,11 @@ foreach(node IN LISTS nodes)
     install(TARGETS ${node}
             DESTINATION lib/${PROJECT_NAME})
 endforeach()
+
+ament_export_dependencies(
+        rclcpp
+        std_msgs
+        controller_interface)
 
 if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
