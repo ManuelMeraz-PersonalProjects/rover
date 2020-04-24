@@ -52,8 +52,7 @@ add_library(imu_adafruit_bno055
         SHARED
         src/Sensor.cpp
         src/Data.cpp
-        src/Calibration.cpp
-        )
+        src/Calibration.cpp)
 
 target_link_libraries(imu_adafruit_bno055
         PUBLIC
@@ -71,29 +70,15 @@ install(TARGETS
         imu_bno055_publisher
         DESTINATION lib/${PROJECT_NAME})
 
-install(
-        DIRECTORY launch
-        DESTINATION share/${PROJECT_NAME}
-)
+install(DIRECTORY launch
+        DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
     ament_lint_auto_find_test_dependencies()
 
-    list(APPEND tests
-            sensorapi
-            read_all_data
-            rawdata
-            position)
-
-    foreach(test IN LISTS tests)
-        add_executable(${test} test/${test}.cpp)
-        target_link_libraries(${test} PRIVATE OdroidAdafruitBNO055)
-    endforeach()
-
     add_executable(test_imu test/test_imu.cpp)
     target_link_libraries(test_imu PRIVATE imu_adafruit_bno055)
-
 endif()
 
 ament_package()
