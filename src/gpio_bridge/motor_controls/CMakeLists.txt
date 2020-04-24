@@ -48,6 +48,21 @@ add_library(std_msgs INTERFACE)
 target_link_libraries(std_msgs INTERFACE ${std_msgs_LIBRARIES})
 target_include_directories(std_msgs INTERFACE ${std_msgs_INCLUDE_DIRS})
 
+find_package(controller_manager REQUIRED)
+add_library(controller_manager INTERFACE)
+target_link_libraries(controller_manager INTERFACE ${controller_manager_LIBRARIES})
+target_include_directories(controller_manager INTERFACE ${controller_manager_INCLUDE_DIRS})
+
+find_package(diff_drive_controller REQUIRED)
+add_library(diff_drive_controller INTERFACE)
+target_link_libraries(diff_drive_controller INTERFACE ${diff_drive_controller_LIBRARIES})
+target_include_directories(diff_drive_controller INTERFACE ${diff_drive_controller_INCLUDE_DIRS})
+
+find_package(joint_state_controller REQUIRED)
+add_library(joint_state_controller INTERFACE)
+target_link_libraries(joint_state_controller INTERFACE ${joint_state_controller_LIBRARIES})
+target_include_directories(joint_state_controller INTERFACE ${joint_state_controller_INCLUDE_DIRS})
+
 add_library(motor_controls
         SHARED
         src/Motor.cpp
@@ -64,10 +79,16 @@ target_include_directories(motor_controls
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-ament_export_targets(export_motor_controls HAS_LIBRARY_TARGET)
+add_executable(diff_drive_controller_node src/diff_drive_controller_node.cpp)
+target_link_libraries(diff_drive_controller_node PRIVATE motor_controls diff_drive_controller controller_manager joint_state_controller)
+
+ament_export_targets(export_motor_controls)
 ament_export_dependencies(OdroidGPIO)
+ament_export_dependencies(ros_controllers)
+ament_export_dependencies(controller_manager)
 ament_export_dependencies(rclcpp)
 ament_export_dependencies(controller_interface)
+ament_export_dependencies(motor_controller)
 
 install(DIRECTORY include/
         DESTINATION include)
@@ -79,7 +100,7 @@ install(TARGETS rclcpp
 install(TARGETS controller_interface
         EXPORT export_motor_controls)
 
-install(TARGETS motor_controls
+install(TARGETS diff_drive_controller_node
         EXPORT export_motor_controls
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
@@ -89,21 +110,6 @@ install(TARGETS motor_controls
 if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
     ament_lint_auto_find_test_dependencies()
-
-    find_package(controller_manager REQUIRED)
-    add_library(controller_manager INTERFACE)
-    target_link_libraries(controller_manager INTERFACE ${controller_manager_LIBRARIES})
-    target_include_directories(controller_manager INTERFACE ${controller_manager_INCLUDE_DIRS})
-
-    find_package(diff_drive_controller REQUIRED)
-    add_library(diff_drive_controller INTERFACE)
-    target_link_libraries(diff_drive_controller INTERFACE ${diff_drive_controller_LIBRARIES})
-    target_include_directories(diff_drive_controller INTERFACE ${diff_drive_controller_INCLUDE_DIRS})
-
-    find_package(joint_state_controller REQUIRED)
-    add_library(joint_state_controller INTERFACE)
-    target_link_libraries(joint_state_controller INTERFACE ${joint_state_controller_LIBRARIES})
-    target_include_directories(joint_state_controller INTERFACE ${joint_state_controller_INCLUDE_DIRS})
 
     add_executable(test_motor_controls test/test_motor_controls.cpp)
     add_test(NAME test_motor_controls COMMAND test_motor_controls)
