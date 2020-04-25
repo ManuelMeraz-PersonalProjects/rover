@@ -40,6 +40,12 @@ def generate_launch_description():
                 "publish_limited_velocity": True,
             }],
         ),
+        Node(
+            package='tf2_ros',
+            node_executable='static_transform_publisher',
+            output='screen',
+            arguments=['0', '0', '0.03', '0', '0', '0', 'base_link', 'imu_bno055_link']
+        )
         # Node(
         #     node_name='rplidarNodeClient',
         #     package='rplidar_ros',
