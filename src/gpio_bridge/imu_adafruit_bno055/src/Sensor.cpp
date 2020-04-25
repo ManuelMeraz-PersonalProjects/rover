@@ -126,7 +126,7 @@ auto Sensor::handle_results(const StatusResults& results) -> bool
    }
 
    if (!initializing) {
-      const auto pass_or_fail = [](uint8_t value) {
+      const auto pass_or_fail = [](uint8_t value) -> std::string {
          std::string str{};
          if (value == 1) {
             str = "PASS!";
@@ -137,13 +137,11 @@ auto Sensor::handle_results(const StatusResults& results) -> bool
          return str;
       };
 
-      std::stringstream self_test_results;
-      self_test_results << "Self Test Results:" << std::endl;
-      self_test_results << "Accelerometer: " << pass_or_fail(results.self_test_results.accelerometer) << std::endl;
-      self_test_results << "Magnetometer: " << pass_or_fail(results.self_test_results.magnetometer) << std::endl;
-      self_test_results << "Gyroscope: " << pass_or_fail(results.self_test_results.gyroscope) << std::endl;
-      self_test_results << "MCU: " << pass_or_fail(results.self_test_results.MCU) << std::endl;
-      RCLCPP_INFO(logger, self_test_results.str());
+      RCLCPP_INFO(logger, "Self Test Results");
+      RCLCPP_INFO(logger, "Accelerometer: %s", pass_or_fail(results.self_test_results.accelerometer).c_str());
+      RCLCPP_INFO(logger, "Magnetometer: %s ", pass_or_fail(results.self_test_results.magnetometer).c_str());
+      RCLCPP_INFO(logger, "Gyroscope: %s", pass_or_fail(results.self_test_results.gyroscope).c_str());
+      RCLCPP_INFO(logger, "MCU: %s", pass_or_fail(results.self_test_results.MCU).c_str());
    }
 
    return initializing;
