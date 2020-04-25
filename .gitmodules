@@ -2,14 +2,26 @@
 	path = src/rplidar_ros
 	url = git@github.com:ManuelMeraz/rplidar_ros.git
 [submodule "src/realtime_tools"]
-	path = src/realtime_tools
+	path = src/controls/realtime_tools
 	url = https://github.com/ros-controls/realtime_tools.git
 [submodule "src/control_msgs"]
-	path = src/control_msgs
+	path = src/controls/control_msgs
 	url = https://github.com/ros-controls/control_msgs.git
 [submodule "src/ros2_controllers"]
-	path = src/ros2_controllers
+	path = src/controls/ros2_controllers
 	url = git@github.com:ManuelMeraz/ros2_controllers.git
 [submodule "src/ros2_control"]
-	path = src/ros2_control
+	path = src/controls/ros2_control
 	url = https://github.com/ros-controls/ros2_control.git
+[submodule "src/robot_localization"]
+	path = src/localization/robot_localization
+	url = git@github.com:cra-ros-pkg/robot_localization.git
+[submodule "src/localization/diagnostics"]
+	path = src/localization/diagnostics
+	url = git@github.com:ros/diagnostics.git
+[submodule "src/localization/geographic_info"]
+	path = src/localization/geographic_info
+	url = git@github.com:ros-geographic-info/geographic_info.git
+[submodule "src/localization/angles"]
+	path = src/localization/angles
+	url = git@github.com:ros/angles.git
