@@ -1,6 +1,6 @@
 from launch_ros.actions import Node
-from os import environ
-
+from ament_index_python.packages import get_package_share_directory
+from os import environ, path
 from launch import LaunchDescription
 
 # Running imu and diff drive controller node with sudo due to needing
@@ -28,17 +28,7 @@ def generate_launch_description():
             package='motor_controls',
             node_executable='diff_drive_controller_node',
             output='screen',
-            parameters=[{
-                "left_wheel_names": ["left_wheels"],
-                "right_wheel_names": ["right_wheels"],
-                "write_op_modes": ["motor_controller"],
-                "wheel_separation": 0.21,
-                "wheels_per_side": 1,  # actually 2, but both are controlled by 1 signal
-                "wheel_radius": 0.05,
-                "open_loop": True,
-                "enable_odom_tf": True,
-                "publish_limited_velocity": True,
-            }],
+            parameters=[path.join(get_package_share_directory("rover_base"), 'params', 'diff_drive_controller.yaml')],
         ),
         Node(
             package='tf2_ros',

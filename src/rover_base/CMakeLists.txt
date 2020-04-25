@@ -31,6 +31,9 @@ find_package(imu_adafruit_bno055 REQUIRED)
 install(DIRECTORY launch
         DESTINATION share/${PROJECT_NAME})
 
+install(DIRECTORY params
+        DESTINATION share/${PROJECT_NAME})
+
 ament_export_dependencies(
         rclcpp
         motor_controls
