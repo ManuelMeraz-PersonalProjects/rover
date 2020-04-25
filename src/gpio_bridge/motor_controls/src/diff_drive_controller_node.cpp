@@ -70,7 +70,8 @@ class DiffDriveControllerNode : public rclcpp::Node
  private:
    static constexpr double DELTA = 0.05;
 
-   motor_controls::MotorController::sPtr m_motor_controller{motor_controls::MotorController::pointer()};
+   gpio_bridge::motor_controls::MotorController::sPtr m_motor_controller{
+      gpio_bridge::motor_controls::MotorController::pointer()};
    rclcpp::TimerBase::SharedPtr m_timer{};
 
    std::shared_ptr<rclcpp::executors::MultiThreadedExecutor> m_executor{

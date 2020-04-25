@@ -14,7 +14,7 @@ int main(int argc, char** argv)
    rclcpp::init(argc, argv);
 
    const auto logger = rclcpp::get_logger("motor_controller_logger");
-   const auto motor_controller = motor_controls::MotorController::pointer();
+   const auto motor_controller = gpio_bridge::motor_controls::MotorController::pointer();
 
    // initialize the robot
    if (motor_controller->init() != hardware_interface::HW_RET_OK) {

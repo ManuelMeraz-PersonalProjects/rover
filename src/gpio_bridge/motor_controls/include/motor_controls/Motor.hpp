@@ -8,7 +8,7 @@
 #include <odroid/gpio.hpp>
 #include <optional>
 
-namespace motor_controls {
+namespace gpio_bridge::motor_controls {
 enum class Direction { FORWARD, REVERSE };
 
 class Motor
@@ -47,5 +47,5 @@ class Motor
    MotorHandle::sPtr m_handle{};
 };
 
-} // namespace motor_controls
+} // namespace gpio_bridge::motor_controls
 #endif // GPIO_BRIDGE_MOTOR_HPP

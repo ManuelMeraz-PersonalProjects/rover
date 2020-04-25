@@ -16,7 +16,7 @@
  * gnd              | -        | 39           | Black
  */
 
-namespace motor_controls {
+namespace gpio_bridge::motor_controls {
 struct Command
 {
    Direction direction{Direction::FORWARD};
@@ -77,5 +77,5 @@ class MotorController : public hardware_interface::RobotHardware
       hardware_interface::OperationModeHandle handle{"motor_controller_mode", &mode};
    } m_operation;
 };
-} // namespace motor_controls
+} // namespace gpio_bridge::motor_controls
 #endif // GPIO_BRIDGE_MOTORCONTROLLER_HPP
