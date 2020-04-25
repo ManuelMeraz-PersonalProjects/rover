@@ -1,13 +1,21 @@
 from launch_ros.actions import Node
+from os import environ
 
 from launch import LaunchDescription
+
+prefixes = [
+    'LD_LIBRARY_PATH', 'AMENT_PREFIX_PATH', 'ROS_VERSION',
+    'ROS_PYTHON_VERSION', 'PYTHONPATH', 'PATH', 'ROS_DISTRO'
+]
+
+prefixes = [prefix + '=' + environ[prefix] for prefix in prefixes]
 
 
 def generate_launch_description():
     return LaunchDescription([
         Node(
-            prefix="sudo",
-            node_name='imu_bno055_publisher',
+            prefix='sudo ' + ' '.join(prefixes),
+            name='imu_bno055_publisher',
             package='imu_adafruit_bno055',
             node_executable='imu_bno055_publisher',
             output='screen',

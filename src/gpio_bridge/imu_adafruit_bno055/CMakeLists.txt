@@ -25,6 +25,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Let's nicely support folders in IDE's
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 find_package(ament_cmake REQUIRED)
 find_package(OdroidAdafruitBNO055 REQUIRED)
 
