@@ -48,25 +48,32 @@ add_library(std_msgs INTERFACE)
 target_link_libraries(std_msgs INTERFACE ${std_msgs_LIBRARIES})
 target_include_directories(std_msgs INTERFACE ${std_msgs_INCLUDE_DIRS})
 
-add_library(imu_adafruit_bno055
+add_library(imu_sensor_library
         SHARED
         src/Sensor.cpp
         src/Data.cpp
-        src/Calibration.cpp)
+        src/calibration.cpp)
 
-target_link_libraries(imu_adafruit_bno055
+target_link_libraries(imu_sensor_library
         PUBLIC
         OdroidAdafruitBNO055
         PRIVATE
         rclcpp)
 
-target_include_directories(imu_adafruit_bno055
+target_include_directories(imu_sensor_library
         PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
 add_executable(imu_bno055_publisher src/imu_bno055_publisher.cpp)
-target_link_libraries(imu_bno055_publisher PRIVATE imu_adafruit_bno055 rclcpp sensor_msgs geometry_msgs std_msgs)
+target_link_libraries(imu_bno055_publisher
+        PRIVATE
+        imu_sensor_library
+        rclcpp
+        sensor_msgs
+        geometry_msgs
+        std_msgs)
+
 
 install(TARGETS
         imu_bno055_publisher
@@ -80,7 +87,7 @@ if(BUILD_TESTING)
     ament_lint_auto_find_test_dependencies()
 
     add_executable(test_imu test/test_imu.cpp)
-    target_link_libraries(test_imu PRIVATE imu_adafruit_bno055 rclcpp)
+    target_link_libraries(test_imu PRIVATE imu_sensor_library rclcpp)
 endif()
 
 ament_package()

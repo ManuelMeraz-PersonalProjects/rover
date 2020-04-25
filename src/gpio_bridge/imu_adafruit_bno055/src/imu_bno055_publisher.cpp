@@ -21,12 +21,6 @@ class IMUBNO055Publisher : public rclcpp::Node
          this->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", QUALITY_OF_SERVICE);
 
       m_publisher_timer = this->create_wall_timer(gpio_bridge::imu::IMU_SAMPLE_RATE, [this] { timercallback(); });
-
-      m_calibration_status_timer = this->create_wall_timer(10s, [this] {
-         std::stringstream calibration_results;
-         calibration_results << std::endl << m_sensor.calibration_status();
-         RCLCPP_INFO(get_logger(), calibration_results.str());
-      });
    }
 
  private:
@@ -73,7 +67,6 @@ class IMUBNO055Publisher : public rclcpp::Node
    rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr m_imu_publisher{};
    rclcpp::Publisher<sensor_msgs::msg::MagneticField>::SharedPtr m_magnetic_field_publisher{};
 
-   rclcpp::TimerBase::SharedPtr m_calibration_status_timer{};
    /* +- 2.5 deg */
    std::array<double, 9> m_linear_acceleration_covariance{0.60, 0, 0, 0, 0.60, 0, 0, 0, 0.60};
    /* +- 3 deg/s */

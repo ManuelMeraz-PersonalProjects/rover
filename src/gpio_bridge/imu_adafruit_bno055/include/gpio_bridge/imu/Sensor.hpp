@@ -1,8 +1,8 @@
 #ifndef GPIO_BRIDGE_IMU_HPP
 #define GPIO_BRIDGE_IMU_HPP
 
-#include "Calibration.hpp"
 #include "Data.hpp"
+#include "calibration.hpp"
 
 #include <Adafruit_BNO055.h>
 #include <chrono>

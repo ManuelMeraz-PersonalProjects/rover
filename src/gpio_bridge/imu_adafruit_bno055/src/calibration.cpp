@@ -1,4 +1,4 @@
-#include "gpio_bridge/imu/Calibration.hpp"
+#include "gpio_bridge/imu/calibration.hpp"
 
 #include <sstream>
 
