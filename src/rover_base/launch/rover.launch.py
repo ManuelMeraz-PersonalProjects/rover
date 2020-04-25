@@ -1,6 +1,7 @@
-from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
+from launch_ros.actions import Node
 from os import environ, path
+
 from launch import LaunchDescription
 
 # Running imu and diff drive controller node with sudo due to needing
@@ -15,6 +16,7 @@ prefixes = [
 prefixes = [prefix + '=' + environ[prefix] for prefix in prefixes]
 node_prefix = 'sudo ' + ' '.join(prefixes)
 
+
 def generate_launch_description():
     return LaunchDescription([
         Node(
@@ -28,14 +30,28 @@ def generate_launch_description():
             package='motor_controls',
             node_executable='diff_drive_controller_node',
             output='screen',
-            parameters=[path.join(get_package_share_directory("rover_base"), 'params', 'diff_drive_controller.yaml')],
+            parameters=[
+                path.join(get_package_share_directory('rover_base'), 'params',
+                          'diff_drive_controller.yaml')
+            ],
         ),
+        Node(package='tf2_ros',
+             node_executable='static_transform_publisher',
+             output='screen',
+             arguments=[
+                 '0', '0', '0.03', '0', '0', '0', 'base_link',
+                 'imu_bno055_link'
+             ]),
         Node(
-            package='tf2_ros',
-            node_executable='static_transform_publisher',
+            package='robot_localization',
+            node_executable='ekf_node',
+            name='ekf_filter_node',
             output='screen',
-            arguments=['0', '0', '0.03', '0', '0', '0', 'base_link', 'imu_bno055_link']
-        )
+            parameters=[
+                path.join(get_package_share_directory('rover_base'), 'params',
+                          'ekf.yaml')
+            ],
+        ),
         # Node(
         #     node_name='rplidarNodeClient',
         #     package='rplidar_ros',
