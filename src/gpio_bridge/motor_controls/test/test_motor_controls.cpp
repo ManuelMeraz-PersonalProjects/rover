@@ -1,23 +1,22 @@
 #include "motor_controls/motor_controls.hpp"
 
 #include <chrono>
-#include <iostream>
+#include <rclcpp/rclcpp.hpp>
 
 using namespace std::chrono_literals;
 
 auto main() -> int
 {
-   auto& controller = motor_controls::MotorController::get();
+   const auto& logger = rclcpp::get_logger("test_motor_controls");
+   auto& controller = gpio_bridge::motor_controls::MotorController::get();
 
    constexpr uint8_t DUTY_CYCLE = 100;
 
-   std::cout << "Actuating motors forward for 10 seconds at 100% duty cycle" << std::endl;
-   motor_controls::Command command{motor_controls::Direction::FORWARD, DUTY_CYCLE, 10s};
+   RCLCPP_INFO(logger, "Actuating motors forward for 10 seconds at 100%% duty cycle");
+   gpio_bridge::motor_controls::Command command{gpio_bridge::motor_controls::Direction::FORWARD, DUTY_CYCLE, 10s};
    controller.actuate(command);
 
-   std::cout << "Actuating motors reverse for 10 seconds at 100% duty cycle" << std::endl;
-   command.direction = motor_controls::Direction::REVERSE;
+   RCLCPP_INFO(logger, "Actuating motors reverse for 10 seconds at 100% duty cycle");
+   command.direction = gpio_bridge::motor_controls::Direction::REVERSE;
    controller.actuate(command);
-
-   controller.stop();
 }

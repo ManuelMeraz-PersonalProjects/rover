@@ -1,6 +1,6 @@
 #include "gpio_bridge/imu/Sensor.hpp"
 
-#include <iostream>
+#include <rclcpp/rclcpp.hpp>
 #include <sstream>
 
 using namespace std::chrono_literals;
@@ -45,33 +45,34 @@ auto Sensor::data() -> const Data&
 
 auto Sensor::handle_results(const StatusResults& results) -> bool
 {
+   const auto& logger = rclcpp::get_logger("IMU Status Results");
    bool initializing{true};
    bool error{false};
 
    switch (results.system_status) {
    case SystemStatus::IDLE:
-      std::cout << "Status is idle. Initializing";
+      RCLCPP_INFO(logger, "Status is idle. Initializing");
       break;
    case SystemStatus::ERROR:
-      std::cerr << "Error. Failed to initialize. Error is: ";
+      RCLCPP_ERROR(logger, "Failed to initialize. Error is: ");
       error = true;
       initializing = false;
       break;
    case SystemStatus::INITIALIZING_PERIPHERALS:
-      std::cout << "Initializing peripherals.";
+      RCLCPP_INFO(logger, "Initializing peripherals.");
       break;
    case SystemStatus::INITIALIZATION:
-      std::cout << "Initializing.";
+      RCLCPP_INFO(logger, "Initializing.");
       break;
    case SystemStatus::SELF_TEST:
-      std::cout << "Running self tests.";
+      RCLCPP_INFO(logger, "Running self tests.");
       break;
    case SystemStatus::FUSION_ALGORITHM_RUNNING:
-      std::cout << "Fusion algorithms are running!";
+      RCLCPP_INFO(logger, "Fusion algorithms are running!");
       initializing = false;
       break;
    case SystemStatus::RUNNING_WITHOUT_FUSION_ALGORITHMS:
-      std::cout << "Running without fusion algorithms!";
+      RCLCPP_INFO(logger, "Running without fusion algorithms!");
       initializing = false;
       break;
    default:
@@ -79,7 +80,6 @@ auto Sensor::handle_results(const StatusResults& results) -> bool
       ss << "Unknown system status: " << static_cast<uint16_t>(results.system_status) << std::endl;
       throw std::runtime_error(ss.str());
    }
-   std::cout << std::endl;
 
    if (error) {
       std::stringstream ss;
@@ -126,7 +126,7 @@ auto Sensor::handle_results(const StatusResults& results) -> bool
    }
 
    if (!initializing) {
-      const auto pass_or_fail = [](uint8_t value) {
+      const auto pass_or_fail = [](uint8_t value) -> std::string {
          std::string str{};
          if (value == 1) {
             str = "PASS!";
@@ -137,11 +137,11 @@ auto Sensor::handle_results(const StatusResults& results) -> bool
          return str;
       };
 
-      std::cout << "Self Test Results:" << std::endl;
-      std::cout << "Accelerometer: " << pass_or_fail(results.self_test_results.accelerometer) << std::endl;
-      std::cout << "Magnetometer: " << pass_or_fail(results.self_test_results.magnetometer) << std::endl;
-      std::cout << "Gyroscope: " << pass_or_fail(results.self_test_results.gyroscope) << std::endl;
-      std::cout << "MCU: " << pass_or_fail(results.self_test_results.MCU) << std::endl;
+      RCLCPP_INFO(logger, "Self Test Results");
+      RCLCPP_INFO(logger, "Accelerometer: %s", pass_or_fail(results.self_test_results.accelerometer).c_str());
+      RCLCPP_INFO(logger, "Magnetometer: %s ", pass_or_fail(results.self_test_results.magnetometer).c_str());
+      RCLCPP_INFO(logger, "Gyroscope: %s", pass_or_fail(results.self_test_results.gyroscope).c_str());
+      RCLCPP_INFO(logger, "MCU: %s", pass_or_fail(results.self_test_results.MCU).c_str());
    }
 
    return initializing;

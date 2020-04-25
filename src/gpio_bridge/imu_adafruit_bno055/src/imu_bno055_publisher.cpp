@@ -20,7 +20,7 @@ class IMUBNO055Publisher : public rclcpp::Node
       m_magnetic_field_publisher =
          this->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", QUALITY_OF_SERVICE);
 
-      m_timer = this->create_wall_timer(gpio_bridge::imu::IMU_SAMPLE_RATE, [this] { timercallback(); });
+      m_publisher_timer = this->create_wall_timer(gpio_bridge::imu::IMU_SAMPLE_RATE, [this] { timercallback(); });
    }
 
  private:
@@ -63,7 +63,7 @@ class IMUBNO055Publisher : public rclcpp::Node
    }
 
    gpio_bridge::imu::Sensor& m_sensor{gpio_bridge::imu::Sensor::get()};
-   rclcpp::TimerBase::SharedPtr m_timer{};
+   rclcpp::TimerBase::SharedPtr m_publisher_timer{};
    rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr m_imu_publisher{};
    rclcpp::Publisher<sensor_msgs::msg::MagneticField>::SharedPtr m_magnetic_field_publisher{};
 

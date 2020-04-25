@@ -1,6 +1,5 @@
 #include "motor_controls/Motor.hpp"
 
-#include <iostream>
 #include <odroid/gpio.hpp>
 
 namespace {
@@ -8,7 +7,7 @@ constexpr uint8_t CLOCK_HZ{128};
 constexpr int RANGE{100};
 } // namespace
 
-motor_controls::Motor::Motor(std::string name, gpio::digital::Pin& dir_pin, gpio::pwm::Pin& pwm_pin) :
+gpio_bridge::motor_controls::Motor::Motor(std::string name, gpio::digital::Pin& dir_pin, gpio::pwm::Pin& pwm_pin) :
    m_direction(Direction::FORWARD),
    m_duty_cycle(0),
    m_dir_pin(dir_pin),
@@ -24,18 +23,18 @@ motor_controls::Motor::Motor(std::string name, gpio::digital::Pin& dir_pin, gpio
    stop();
 }
 
-auto motor_controls::Motor::direction() const -> motor_controls::Direction
+auto gpio_bridge::motor_controls::Motor::direction() const -> gpio_bridge::motor_controls::Direction
 {
    return m_direction;
 }
-auto motor_controls::Motor::duty_cycle() const -> uint8_t
+auto gpio_bridge::motor_controls::Motor::duty_cycle() const -> uint8_t
 {
    return m_duty_cycle;
 }
 
-void motor_controls::Motor::actuate(Direction direction,
-                                    uint8_t duty_cycle,
-                                    std::optional<std::chrono::milliseconds> time)
+void gpio_bridge::motor_controls::Motor::actuate(Direction direction,
+                                                 uint8_t duty_cycle,
+                                                 std::optional<std::chrono::milliseconds> time)
 {
    if (direction != m_direction) {
       stop();
@@ -90,7 +89,7 @@ void motor_controls::Motor::actuate(Direction direction,
    }
 }
 
-void motor_controls::Motor::stop()
+void gpio_bridge::motor_controls::Motor::stop()
 {
    while (m_duty_cycle > 0) {
       if (m_duty_cycle < DUTY_CYCLE_DELTA) {
@@ -106,7 +105,7 @@ void motor_controls::Motor::stop()
    m_pwm_pin.mode(gpio::pwm::Mode::OFF);
 }
 
-auto motor_controls::Motor::handle() const -> motor_controls::MotorHandle::sPtr
+auto gpio_bridge::motor_controls::Motor::handle() const -> gpio_bridge::motor_controls::MotorHandle::sPtr
 {
    return m_handle;
 }

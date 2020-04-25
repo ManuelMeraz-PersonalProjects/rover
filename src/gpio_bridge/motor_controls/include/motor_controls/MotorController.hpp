@@ -16,7 +16,7 @@
  * gnd              | -        | 39           | Black
  */
 
-namespace motor_controls {
+namespace gpio_bridge::motor_controls {
 struct Command
 {
    Direction direction{Direction::FORWARD};
@@ -28,10 +28,6 @@ class MotorController : public hardware_interface::RobotHardware
 {
  public:
    using sPtr = std::shared_ptr<MotorController>;
-
-   // Please do not call this constructor/destructor
-   MotorController();
-   ~MotorController() override = default;
 
    MotorController(const MotorController&) = delete;
    MotorController(MotorController&&) = delete;
@@ -67,6 +63,10 @@ class MotorController : public hardware_interface::RobotHardware
     */
    void stop();
 
+ protected:
+   MotorController();
+   ~MotorController() override = default;
+
  private:
    Motor::uPtr m_left_motor{};
    Motor::uPtr m_right_motor{};
@@ -77,5 +77,5 @@ class MotorController : public hardware_interface::RobotHardware
       hardware_interface::OperationModeHandle handle{"motor_controller_mode", &mode};
    } m_operation;
 };
-} // namespace motor_controls
+} // namespace gpio_bridge::motor_controls
 #endif // GPIO_BRIDGE_MOTORCONTROLLER_HPP

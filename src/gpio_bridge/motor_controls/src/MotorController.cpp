@@ -10,8 +10,13 @@ namespace pwm = gpio::pwm;
 
 namespace {
 
+// this is a bit hacky, but the derived class can make allocate a new motor controller
+// but motor controller can't because the constructors are private within that context
+struct make_shared_enabler : public gpio_bridge::motor_controls::MotorController
+{
+};
 // globals
-std::shared_ptr<motor_controls::MotorController> g_controller{nullptr};
+std::shared_ptr<make_shared_enabler> g_controller{nullptr};
 
 constexpr uint8_t DIR1_WIRING_PI_PIN{21};
 constexpr uint8_t DIR2_WIRING_PI_PIN{22};
@@ -19,7 +24,7 @@ constexpr uint8_t PWM1_WIRING_PI_PIN{23};
 constexpr uint8_t PWM2_WIRING_PI_PIN{24};
 } // namespace
 
-motor_controls::MotorController::MotorController()
+gpio_bridge::motor_controls::MotorController::MotorController()
 {
    if (!gpio::setup()) {
       throw std::runtime_error("Setup Odroid GPIO Failed!");
@@ -30,21 +35,19 @@ motor_controls::MotorController::MotorController()
    auto& pwm1_pin = gpio::get<pwm::Pin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
    auto& pwm2_pin = gpio::get<pwm::Pin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
 
-   m_left_motor = std::make_unique<motor_controls::Motor>("left_wheels", dir1_pin, pwm1_pin);
-   m_right_motor = std::make_unique<motor_controls::Motor>("right_wheels", dir2_pin, pwm2_pin);
+   m_left_motor = std::make_unique<gpio_bridge::motor_controls::Motor>("left_wheels", dir1_pin, pwm1_pin);
+   m_right_motor = std::make_unique<gpio_bridge::motor_controls::Motor>("right_wheels", dir2_pin, pwm2_pin);
 }
 
-hardware_interface::hardware_interface_ret_t motor_controls::MotorController::init()
+hardware_interface::hardware_interface_ret_t gpio_bridge::motor_controls::MotorController::init()
 {
 
    const auto init_motor = [this](const MotorHandle::sPtr& handle) {
-      if (register_joint_state_handle(&handle->joint_state_handle) !=
-          hardware_interface::HW_RET_OK) {
+      if (register_joint_state_handle(&handle->joint_state_handle) != hardware_interface::HW_RET_OK) {
          throw std::runtime_error("unable to register " + handle->joint_state_handle.get_name());
       }
 
-      if (register_joint_command_handle(&handle->joint_command_handle) !=
-          hardware_interface::HW_RET_OK) {
+      if (register_joint_command_handle(&handle->joint_command_handle) != hardware_interface::HW_RET_OK) {
          throw std::runtime_error("unable to register " + handle->joint_command_handle.get_name());
       }
    };
@@ -58,7 +61,7 @@ hardware_interface::hardware_interface_ret_t motor_controls::MotorController::in
    return hardware_interface::HW_RET_OK;
 }
 
-hardware_interface::hardware_interface_ret_t motor_controls::MotorController::read()
+hardware_interface::hardware_interface_ret_t gpio_bridge::motor_controls::MotorController::read()
 {
    auto left_motor_handle = m_left_motor->handle();
    auto right_motor_handle = m_right_motor->handle();
@@ -69,7 +72,7 @@ hardware_interface::hardware_interface_ret_t motor_controls::MotorController::re
    return hardware_interface::HW_RET_OK;
 }
 
-hardware_interface::hardware_interface_ret_t motor_controls::MotorController::write()
+hardware_interface::hardware_interface_ret_t gpio_bridge::motor_controls::MotorController::write()
 {
    auto left_motor_handle = m_left_motor->handle();
    auto right_motor_handle = m_right_motor->handle();
@@ -88,22 +91,22 @@ hardware_interface::hardware_interface_ret_t motor_controls::MotorController::wr
    return hardware_interface::HW_RET_OK;
 }
 
-void motor_controls::MotorController::actuate(const motor_controls::Command& both_command)
+void gpio_bridge::motor_controls::MotorController::actuate(const gpio_bridge::motor_controls::Command& both_command)
 {
    const auto& left_command = both_command;
    const auto& right_command = both_command;
    actuate(left_command, right_command);
 }
 
-void motor_controls::MotorController::actuate(const motor_controls::Command& left_command,
-                                              const motor_controls::Command& right_command)
+void gpio_bridge::motor_controls::MotorController::actuate(const gpio_bridge::motor_controls::Command& left_command,
+                                                           const gpio_bridge::motor_controls::Command& right_command)
 
 {
-   const auto actuate_left_motor = [this](const motor_controls::Command& command) {
+   const auto actuate_left_motor = [this](const gpio_bridge::motor_controls::Command& command) {
       m_left_motor->actuate(command.direction, command.duty_cycle, command.time);
    };
 
-   const auto actuate_right_motor = [this](const motor_controls::Command& command) {
+   const auto actuate_right_motor = [this](const gpio_bridge::motor_controls::Command& command) {
       m_right_motor->actuate(command.direction, command.duty_cycle, command.time);
    };
 
@@ -114,7 +117,7 @@ void motor_controls::MotorController::actuate(const motor_controls::Command& lef
    move_right.join();
 }
 
-void motor_controls::MotorController::stop()
+void gpio_bridge::motor_controls::MotorController::stop()
 {
    const auto stop_left_motor = [this]() { m_left_motor->stop(); };
 
@@ -127,16 +130,16 @@ void motor_controls::MotorController::stop()
    stop_right.join();
 }
 
-auto motor_controls::MotorController::get() -> motor_controls::MotorController&
+auto gpio_bridge::motor_controls::MotorController::get() -> gpio_bridge::motor_controls::MotorController&
 {
    return *pointer();
 }
 
-auto motor_controls::MotorController::pointer() -> std::shared_ptr<MotorController>
+auto gpio_bridge::motor_controls::MotorController::pointer() -> std::shared_ptr<MotorController>
 {
    if (g_controller == nullptr) {
-      g_controller = std::make_shared<MotorController>();
+      g_controller = std::make_shared<make_shared_enabler>();
    }
 
-   return g_controller;
+   return static_cast<std::shared_ptr<MotorController>>(g_controller);
 }
