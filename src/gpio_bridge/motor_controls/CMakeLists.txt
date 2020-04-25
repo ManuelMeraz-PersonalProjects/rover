@@ -73,7 +73,6 @@ target_link_libraries(diff_drive_controller_node
         controller_manager
         joint_state_controller)
 
-ament_export_targets(export_motor_controls)
 ament_export_dependencies(rclcpp)
 ament_export_dependencies(controller_manager)
 ament_export_dependencies(controller_interface)
@@ -84,12 +83,9 @@ install(DIRECTORY include/
         DESTINATION include)
 
 # need to export rclcpp and controller_interface for some reason
-install(TARGETS diff_drive_controller_node
-        EXPORT export_motor_controls
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin
-        INCLUDES DESTINATION include)
+install(TARGETS
+        diff_drive_controller_node
+        DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
@@ -111,10 +107,6 @@ if(BUILD_TESTING)
     add_executable(cmd_vel_publisher test/cmd_vel_publisher.cpp)
     add_test(NAME cmd_vel_publisher COMMAND cmd_vel_publisher)
     target_link_libraries(cmd_vel_publisher PRIVATE rclcpp geometry_msgs std_msgs)
-
-    install(TARGETS controller_manager
-            EXPORT export_motor_controls)
-
 endif()
 
 ament_package()
