@@ -15,7 +15,7 @@ class CommandVelocityPublisher : public rclcpp::Node
       m_command_velocity_publisher =
          this->create_publisher<geometry_msgs::msg::TwistStamped>("/diff_drive_controller/cmd_vel", QUALITY_OF_SERVICE);
 
-      m_timer = this->create_wall_timer(400ms, [this] {
+      m_timer = this->create_wall_timer(100ms, [this] {
          geometry_msgs::msg::TwistStamped message;
          message.header.stamp = get_clock()->now();
          message.header.frame_id = "base_link";
