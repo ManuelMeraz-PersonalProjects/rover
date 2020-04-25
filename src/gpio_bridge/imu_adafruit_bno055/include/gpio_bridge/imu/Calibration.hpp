@@ -2,7 +2,7 @@
 #define IMU_ADAFRUIT_BNO055_CALIBRATION_HPP
 
 #include <Adafruit_Sensor.h>
-#include <iostream>
+#include <ostream>
 
 namespace gpio_bridge::imu {
 struct Calibration

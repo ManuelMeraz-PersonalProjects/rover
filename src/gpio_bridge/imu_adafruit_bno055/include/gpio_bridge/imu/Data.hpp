@@ -3,7 +3,6 @@
 
 #include <Adafruit_Sensor.h>
 #include <iomanip>
-#include <iostream>
 #include <utility/quaternion.h>
 #include <utility/vector.h>
 

@@ -56,7 +56,9 @@ add_library(imu_adafruit_bno055
 
 target_link_libraries(imu_adafruit_bno055
         PUBLIC
-        OdroidAdafruitBNO055)
+        OdroidAdafruitBNO055
+        PRIVATE
+        rclcpp)
 
 target_include_directories(imu_adafruit_bno055
         PUBLIC
@@ -78,7 +80,7 @@ if(BUILD_TESTING)
     ament_lint_auto_find_test_dependencies()
 
     add_executable(test_imu test/test_imu.cpp)
-    target_link_libraries(test_imu PRIVATE imu_adafruit_bno055)
+    target_link_libraries(test_imu PRIVATE imu_adafruit_bno055 rclcpp)
 endif()
 
 ament_package()
