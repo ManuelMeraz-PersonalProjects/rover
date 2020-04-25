@@ -1,15 +1,9 @@
 [submodule "src/rplidar_ros"]
 	path = src/rplidar_ros
 	url = git@github.com:ManuelMeraz/rplidar_ros.git
-[submodule "src/ros2_controllers"]
-	path = src/ros2_controllers
-	url = git@github.com:ManuelMeraz/ros2_controllers.git
 [submodule "src/realtime_tools"]
 	path = src/realtime_tools
 	url = https://github.com/ros-controls/realtime_tools.git
 [submodule "src/control_msgs"]
 	path = src/control_msgs
 	url = https://github.com/ros-controls/control_msgs.git
-[submodule "src/ros2_control"]
-	path = src/ros2_control
-	url = https://github.com/ros-controls/ros2_control.git
