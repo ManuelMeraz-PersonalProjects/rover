@@ -74,7 +74,7 @@ class MotorController : public hardware_interface::RobotHardware
    struct OperationMode
    {
       hardware_interface::OperationMode mode{false};
-      hardware_interface::OperationModeHandle handle{"motor_controller_mode", &mode};
+      hardware_interface::OperationModeHandle handle{"motor_controller", &mode};
    } m_operation;
 };
 } // namespace gpio_bridge::motor_controls

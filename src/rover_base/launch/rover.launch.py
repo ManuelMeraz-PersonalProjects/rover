@@ -15,23 +15,23 @@ prefixes = [
 prefixes = [prefix + '=' + environ[prefix] for prefix in prefixes]
 node_prefix = 'sudo ' + ' '.join(prefixes)
 
-
 def generate_launch_description():
     return LaunchDescription([
         Node(
             prefix=node_prefix,
-            name='imu_bno055_publisher',
             package='imu_adafruit_bno055',
             node_executable='imu_bno055_publisher',
             output='screen',
         ),
         Node(
             prefix=node_prefix,
-            name='diff_drive_controller_node',
             package='motor_controls',
             node_executable='diff_drive_controller_node',
             output='screen',
             parameters=[{
+                "left_wheel_names": ["left_wheels"],
+                "right_wheel_names": ["right_wheels"],
+                "write_op_modes": ["motor_controller"],
                 "wheel_separation": 0.21,
                 "wheels_per_side": 1,  # actually 2, but both are controlled by 1 signal
                 "wheel_radius": 0.05,

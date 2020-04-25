@@ -13,7 +13,7 @@ class DiffDriveControllerNode : public rclcpp::Node
    {
       const auto logger = this->get_logger();
 
-      // initialize the robot
+//       initialize the robot
       if (m_motor_controller->init() != hardware_interface::HW_RET_OK) {
          throw std::runtime_error("Failed to initialize motor controller.");
       }
@@ -23,11 +23,9 @@ class DiffDriveControllerNode : public rclcpp::Node
       const auto joint_state_controller{std::make_shared<joint_state_controller::JointStateController>()};
       m_controller_manager.add_controller(joint_state_controller, "motor_state_controller");
 
-      const auto diff_drive_controller{std::make_shared<diff_drive_controller::DiffDriveController>(
-         std::vector<std::string>{"left_wheels"},
-         std::vector<std::string>{"right_wheels"},
-         m_motor_controller->get_registered_write_op_names())};
-      m_controller_manager.add_controller(diff_drive_controller, "diff_drive_controller");
+      m_controller_manager.load_controller(
+         "diff_drive_controller",
+         "diff_drive_controller/DiffDriveController");
 
       if (m_controller_manager.configure() != controller_interface::CONTROLLER_INTERFACE_RET_SUCCESS) {
          throw std::runtime_error("At least one controller failed to configure");

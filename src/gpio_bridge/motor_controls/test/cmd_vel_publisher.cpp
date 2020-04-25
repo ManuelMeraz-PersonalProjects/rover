@@ -7,13 +7,13 @@ using namespace std::chrono_literals;
 /* This example creates a subclass of Node and uses std::bind() to register a
  * member function as a callback from the timer. */
 
-class IMUBNO055Publisher : public rclcpp::Node
+class CommandVelocityPublisher : public rclcpp::Node
 {
  public:
-   IMUBNO055Publisher() : Node("imu_bno055_publisher")
+   CommandVelocityPublisher() : Node("command_velocity_publisher")
    {
       m_command_velocity_publisher =
-         this->create_publisher<geometry_msgs::msg::TwistStamped>("/motor_controller/cmd_vel", QUALITY_OF_SERVICE);
+         this->create_publisher<geometry_msgs::msg::TwistStamped>("/diff_drive_controller/cmd_vel", QUALITY_OF_SERVICE);
 
       m_timer = this->create_wall_timer(400ms, [this] {
          geometry_msgs::msg::TwistStamped message;
@@ -59,7 +59,7 @@ class IMUBNO055Publisher : public rclcpp::Node
 int main(int argc, char* argv[])
 {
    rclcpp::init(argc, argv);
-   rclcpp::spin(std::make_shared<IMUBNO055Publisher>());
+   rclcpp::spin(std::make_shared<CommandVelocityPublisher>());
    rclcpp::shutdown();
    return 0;
 }
