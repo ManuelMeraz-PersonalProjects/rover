@@ -25,27 +25,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(controller_interface REQUIRED)
+find_package(motor_controls REQUIRED)
+find_package(imu_adafruit_bno055 REQUIRED)
 
-list(APPEND nodes rover_node talker listener)
-
-foreach(node IN LISTS nodes)
-    add_executable(${node} src/${node}.cpp)
-    ament_target_dependencies(${node} rclcpp std_msgs controller_interface)
-    target_include_directories(${node} PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-            $<INSTALL_INTERFACE:include>)
-
-    install(TARGETS ${node}
-            DESTINATION lib/${PROJECT_NAME})
-endforeach()
+install(DIRECTORY launch
+        DESTINATION share/${PROJECT_NAME})
 
 ament_export_dependencies(
         rclcpp
-        std_msgs
-        controller_interface)
+        motor_controls
+        imu_adafruit_bno055)
 
 if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
