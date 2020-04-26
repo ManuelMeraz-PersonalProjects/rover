@@ -31,7 +31,7 @@ def generate_launch_description():
             node_executable='diff_drive_controller_node',
             output='screen',
             parameters=[
-                path.join(get_package_share_directory('rover_base'), 'params',
+                path.join(get_package_share_directory('rover_base'), 'config',
                           'diff_drive_controller.yaml')
             ],
         ),
@@ -48,7 +48,7 @@ def generate_launch_description():
             name='ekf_filter_node',
             output='screen',
             parameters=[
-                path.join(get_package_share_directory('rover_base'), 'params',
+                path.join(get_package_share_directory('rover_base'), 'config',
                           'ekf.yaml')
             ],
         ),
