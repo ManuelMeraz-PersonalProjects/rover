@@ -7,6 +7,8 @@ using namespace std::chrono_literals;
 namespace gpio_bridge::imu {
 Sensor::Sensor() : m_sensor(UNIQUE_IMU_ID, ODROID_N2_I2C_ADDRESS)
 {
+   m_sensor.setExtCrystalUse(true);
+
    bool initializing = true;
    while (initializing) {
       StatusResults results;
@@ -15,7 +17,7 @@ Sensor::Sensor() : m_sensor(UNIQUE_IMU_ID, ODROID_N2_I2C_ADDRESS)
                                reinterpret_cast<uint8_t*>(&results.system_error));
 
       initializing = handle_results(results);
-      if (!initializing) {
+      if (initializing) {
          gpio::sleep(IMU_SAMPLE_RATE);
       }
    }
