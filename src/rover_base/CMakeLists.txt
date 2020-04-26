@@ -27,6 +27,16 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 find_package(ament_cmake REQUIRED)
 find_package(motor_controls REQUIRED)
 find_package(imu_adafruit_bno055 REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+
+add_executable(timestamped_key_teleop src/timestamped_key_teleop.cpp)
+ament_target_dependencies(timestamped_key_teleop rclcpp geometry_msgs std_msgs)
+
+install(TARGETS
+        timestamped_key_teleop
+        DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch
         DESTINATION share/${PROJECT_NAME})

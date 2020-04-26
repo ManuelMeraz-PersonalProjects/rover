@@ -65,4 +65,10 @@ def generate_launch_description():
         #         'angle_compensate': True,
         #     }],
         # ),
+        Node(
+            package='rover_base',
+            node_executable='timestamped_key_teleop',
+            name='timestamped_key_teleop_node',
+            output='screen',
+        ),
     ])
