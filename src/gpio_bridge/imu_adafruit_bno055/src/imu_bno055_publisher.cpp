@@ -26,6 +26,17 @@ class IMUBNO055Publisher : public rclcpp::Node
          this->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", QUALITY_OF_SERVICE);
 
       m_publisher_timer = this->create_wall_timer(gpio_bridge::imu::IMU_SAMPLE_RATE, [this] { timercallback(); });
+
+      m_calibration_timer = this->create_wall_timer(5s, [this] {
+         const auto& logger = get_logger();
+         if (!m_sensor.fully_calibrated()) {
+            RCLCPP_WARN(logger, "IMU not fully calibrated. Waiting for auto calibration before publishing out data.");
+            m_publisher_timer->cancel();
+         } else if (m_publisher_timer->is_canceled()) {
+            RCLCPP_INFO(logger, "IMU is fully calibrated! Will now begin publishing imu data.");
+            m_publisher_timer = this->create_wall_timer(gpio_bridge::imu::IMU_SAMPLE_RATE, [this] { timercallback(); });
+         }
+      });
    }
 
  private:
@@ -69,6 +80,7 @@ class IMUBNO055Publisher : public rclcpp::Node
 
    gpio_bridge::imu::Sensor& m_sensor{gpio_bridge::imu::Sensor::get()};
    rclcpp::TimerBase::SharedPtr m_publisher_timer{};
+   rclcpp::TimerBase::SharedPtr m_calibration_timer{};
    rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr m_imu_publisher{};
    rclcpp::Publisher<sensor_msgs::msg::MagneticField>::SharedPtr m_magnetic_field_publisher{};
 

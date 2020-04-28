@@ -18,9 +18,10 @@ class Sensor
    auto operator=(const Sensor&) -> Sensor& = delete;
    auto operator=(Sensor &&) -> Sensor& = delete;
 
-   static auto get() -> Sensor&;
-   auto data() -> const Data&;
-   auto calibration_status() -> const Calibration&;
+   [[nodiscard]] static auto get() -> Sensor&;
+   [[nodiscard]] auto data() -> const Data&;
+   [[nodiscard]] auto calibration_status() -> const Calibration&;
+   [[nodiscard]] auto fully_calibrated() -> const bool;
 
    auto load_calibration_data(std::string_view calibration_data_path) -> void;
 
