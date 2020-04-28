@@ -22,6 +22,8 @@ class Sensor
    auto data() -> const Data&;
    auto calibration_status() -> const Calibration&;
 
+   auto load_calibration_data(std::string_view calibration_data_path) -> void;
+
  private:
    enum class SystemStatus : uint8_t {
       IDLE = 0,
@@ -69,12 +71,14 @@ class Sensor
    static constexpr auto UNIQUE_IMU_ID = 1;
 
    Sensor();
+   ~Sensor();
 
    static auto handle_results(const StatusResults& results) -> bool;
 
    Adafruit_BNO055 m_sensor;
    Data m_data{};
    Calibration m_calibration_status{};
+   std::string m_calibration_data_path{};
 };
 } // namespace gpio_bridge::imu
 #endif // GPIO_BRIDGE_IMU_HPP

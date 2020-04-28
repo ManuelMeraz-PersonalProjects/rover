@@ -1,5 +1,6 @@
 #include "gpio_bridge/imu/Sensor.hpp"
 
+#include <fstream>
 #include <rclcpp/rclcpp.hpp>
 #include <sstream>
 
@@ -22,7 +23,37 @@ Sensor::Sensor() : m_sensor(UNIQUE_IMU_ID, ODROID_N2_I2C_ADDRESS)
       }
    }
 
-   m_sensor.setExtCrystalUse(true);
+   const auto& logger = rclcpp::get_logger("IMU Calibration");
+   if (m_sensor.isFullyCalibrated()) {
+      RCLCPP_INFO(logger, "IMU is fully calibrated");
+   } else {
+      RCLCPP_WARN(logger, "IMU is NOT fully calibrated");
+   }
+}
+
+Sensor::~Sensor()
+{
+   const auto& logger = rclcpp::get_logger("IMU Save Calibration");
+   if (!m_sensor.isFullyCalibrated()) {
+      RCLCPP_WARN(logger, "IMU is NOT fully calibrated. Will not save calibration data.");
+      return;
+   }
+
+   RCLCPP_INFO(logger, "IMU is fully calibrated. Saving calibration data.");
+
+   if (m_calibration_data_path.empty()) {
+      RCLCPP_WARN(logger, "IMU calibration data path was not set!")
+      RCLCPP_INFO(logger, "Saving calibration data in current directory: calibration_data.data");
+      m_calibration_data_path = "calibration_data.dat";
+   } else {
+      RCLCPP_INFO(logger, "Calibration data was previously loaded. Saving calibration data in same location");
+   }
+
+   adafruit_bno055_offsets_t calibration_data;
+
+   std::ofstream outfile;
+   outfile.open(m_calibration_data_path.c_str(), std::ios::binary | std::ios::out);
+   outfile.write(reinterpret_cast<char*>(&calibration_data), sizeof(calibration_data));
 }
 
 auto Sensor::get() -> Sensor&
@@ -161,4 +192,21 @@ auto Sensor::calibration_status() -> const Calibration&
 
    return m_calibration_status;
 }
+
+auto Sensor::load_calibration_data(std::string_view calibration_data_path) -> void
+{
+   // For saving the data later
+   const auto& logger = rclcpp::get_logger("IMU Loading Calibration");
+   RCLCPP_INFO(logger, "Loading IMU calibration data from: %s", calibration_data_path.data());
+   m_calibration_data_path = calibration_data_path.data();
+
+   adafruit_bno055_offsets_t calibration_data{};
+   std::ifstream calibration_data_file;
+   calibration_data_file.open(calibration_data_path.data(), std::ios::binary | std::ios::in);
+   calibration_data_file.read(reinterpret_cast<char*>(&calibration_data),
+                              sizeof(calibration_data)); // reads 7 bytes into a cell that is either 2 or 4
+
+   m_sensor.setSensorOffsets(calibration_data);
+}
+
 } // namespace gpio_bridge::imu
