@@ -44,6 +44,9 @@ install(DIRECTORY launch
 install(DIRECTORY config
         DESTINATION share/${PROJECT_NAME})
 
+install(DIRECTORY imu_calibration
+        DESTINATION share/${PROJECT_NAME})
+
 ament_export_dependencies(
         rclcpp
         motor_controls

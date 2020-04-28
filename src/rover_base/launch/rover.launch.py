@@ -24,6 +24,9 @@ def generate_launch_description():
             package='imu_adafruit_bno055',
             node_executable='imu_bno055_publisher',
             output='screen',
+            parameters=[
+                {"calibration_data_path": path.join(get_package_share_directory('rover_base'), 'imu_calibration', 'calibration_data.dat')}
+            ],
         ),
         Node(
             prefix=node_prefix,

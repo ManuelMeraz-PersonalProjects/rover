@@ -42,7 +42,7 @@ Sensor::~Sensor()
    RCLCPP_INFO(logger, "IMU is fully calibrated. Saving calibration data.");
 
    if (m_calibration_data_path.empty()) {
-      RCLCPP_WARN(logger, "IMU calibration data path was not set!")
+      RCLCPP_WARN(logger, "IMU calibration data path was not set!");
       RCLCPP_INFO(logger, "Saving calibration data in current directory: calibration_data.data");
       m_calibration_data_path = "calibration_data.dat";
    } else {

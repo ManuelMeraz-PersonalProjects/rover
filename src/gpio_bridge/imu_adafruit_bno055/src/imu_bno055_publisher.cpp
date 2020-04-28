@@ -5,6 +5,7 @@
 #include <sensor_msgs/msg/imu.hpp>
 #include <sensor_msgs/msg/magnetic_field.hpp>
 
+constexpr auto CALIBRATION_PATH_PARAM{"calibration_data_path"};
 constexpr auto QUALITY_OF_SERVICE = 10;
 using namespace std::chrono_literals;
 
@@ -16,8 +17,8 @@ class IMUBNO055Publisher : public rclcpp::Node
  public:
    IMUBNO055Publisher() : Node("imu_bno055_publisher")
    {
-      this->declare_parameter("calibration_data_path");
-      m_calibration_data_path = this->get_parameter("calibration_data_path").as_string();
+      this->declare_parameter(CALIBRATION_PATH_PARAM);
+      m_calibration_data_path = this->get_parameter(CALIBRATION_PATH_PARAM).as_string();
       m_sensor.load_calibration_data(m_calibration_data_path);
 
       m_imu_publisher = this->create_publisher<sensor_msgs::msg::Imu>("imu/data", QUALITY_OF_SERVICE);
