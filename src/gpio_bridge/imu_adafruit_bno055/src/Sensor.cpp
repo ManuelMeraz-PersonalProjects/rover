@@ -209,7 +209,7 @@ auto Sensor::load_calibration_data(std::string_view calibration_data_path) -> vo
    m_sensor.setSensorOffsets(calibration_data);
 }
 
-auto Sensor::fully_calibrated() -> const bool
+auto Sensor::fully_calibrated() -> bool
 {
    return m_sensor.isFullyCalibrated();
 }

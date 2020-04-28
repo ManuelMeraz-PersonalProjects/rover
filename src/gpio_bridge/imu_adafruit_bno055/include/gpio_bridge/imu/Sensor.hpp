@@ -21,7 +21,7 @@ class Sensor
    [[nodiscard]] static auto get() -> Sensor&;
    [[nodiscard]] auto data() -> const Data&;
    [[nodiscard]] auto calibration_status() -> const Calibration&;
-   [[nodiscard]] auto fully_calibrated() -> const bool;
+   [[nodiscard]] auto fully_calibrated() -> bool;
 
    auto load_calibration_data(std::string_view calibration_data_path) -> void;
 
