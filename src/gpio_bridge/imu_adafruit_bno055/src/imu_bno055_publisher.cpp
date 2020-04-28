@@ -16,6 +16,10 @@ class IMUBNO055Publisher : public rclcpp::Node
  public:
    IMUBNO055Publisher() : Node("imu_bno055_publisher")
    {
+      this->declare_parameter("calibration_data_path");
+      m_calibration_data_path = this->get_parameter("calibration_data_path").as_string();
+      m_sensor.load_calibration_data(m_calibration_data_path);
+
       m_imu_publisher = this->create_publisher<sensor_msgs::msg::Imu>("imu/data", QUALITY_OF_SERVICE);
       m_magnetic_field_publisher =
          this->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", QUALITY_OF_SERVICE);
@@ -73,6 +77,8 @@ class IMUBNO055Publisher : public rclcpp::Node
    std::array<double, 9> m_orientation_covariance{0.002, 0, 0, 0, 0.002, 0, 0, 0, 0.002};
    /* +- 80mg */
    std::array<double, 9> m_angular_velocity_covariance{0.003, 0, 0, 0, 0.003, 0, 0, 0, 0.003};
+
+   std::string m_calibration_data_path;
 };
 
 int main(int argc, char* argv[])
