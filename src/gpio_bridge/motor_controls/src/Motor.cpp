@@ -15,10 +15,12 @@ gpio_bridge::motor_controls::Motor::Motor(std::string name, gpio::digital::Pin& 
    m_name(std::move(name)),
    m_handle(std::make_shared<MotorHandle>())
 {
-   m_handle->joint_state_handle = hardware_interface::JointStateHandle(
-      m_name, &m_handle->position, &m_handle->velocity, &m_handle->effort);
-   m_handle->joint_command_handle =
-      hardware_interface::JointCommandHandle(m_name, &m_handle->command);
+   gpio::pwm::clock(CLOCK_HZ);
+   gpio::pwm::range(RANGE);
+
+   m_handle->joint_state_handle =
+      hardware_interface::JointStateHandle(m_name, &m_handle->position, &m_handle->velocity, &m_handle->effort);
+   m_handle->joint_command_handle = hardware_interface::JointCommandHandle(m_name, &m_handle->command);
    m_dir_pin.write(gpio::digital::IO::LOW);
    stop();
 }
@@ -36,50 +38,15 @@ void gpio_bridge::motor_controls::Motor::actuate(Direction direction,
                                                  uint8_t duty_cycle,
                                                  std::optional<std::chrono::milliseconds> time)
 {
-   if (direction != m_direction) {
-      stop();
-
-      m_pwm_pin.mode(gpio::pwm::Mode::OUTPUT);
-      gpio::pwm::clock(CLOCK_HZ);
-      gpio::pwm::range(RANGE);
-
-      m_direction = direction;
-      if (m_direction == Direction::FORWARD) {
-         m_dir_pin.write(gpio::digital::IO::LOW);
-      } else if (m_direction == Direction::REVERSE) {
-         m_dir_pin.write(gpio::digital::IO::HIGH);
-      }
-   } else {
-      m_pwm_pin.mode(gpio::pwm::Mode::OUTPUT);
-      gpio::pwm::clock(CLOCK_HZ);
-      gpio::pwm::range(RANGE);
+   m_duty_cycle = duty_cycle;
+   m_direction = direction;
+   if (direction == Direction::FORWARD) {
+      m_dir_pin.write(gpio::digital::IO::LOW);
+   } else if (direction == Direction::REVERSE) {
+      m_dir_pin.write(gpio::digital::IO::HIGH);
    }
 
-   if (duty_cycle > m_duty_cycle) {
-      while (m_duty_cycle < duty_cycle) {
-         if (duty_cycle - m_duty_cycle < DUTY_CYCLE_DELTA) {
-            m_duty_cycle = duty_cycle;
-            m_pwm_pin.duty_cycle(m_duty_cycle);
-            break;
-         }
-
-         m_duty_cycle += DUTY_CYCLE_DELTA;
-         m_pwm_pin.duty_cycle(m_duty_cycle);
-         gpio::sleep(DELTA_SLEEP_TIME);
-      }
-   } else if (duty_cycle < m_duty_cycle) {
-      while (m_duty_cycle > duty_cycle) {
-         if (m_duty_cycle - duty_cycle < DUTY_CYCLE_DELTA) {
-            m_duty_cycle = duty_cycle;
-            m_pwm_pin.duty_cycle(m_duty_cycle);
-            break;
-         }
-
-         m_duty_cycle -= DUTY_CYCLE_DELTA;
-         m_pwm_pin.duty_cycle(m_duty_cycle);
-         gpio::sleep(DELTA_SLEEP_TIME);
-      }
-   }
+   m_pwm_pin.duty_cycle(duty_cycle);
 
    if (time) {
       gpio::sleep(*time);
@@ -91,18 +58,7 @@ void gpio_bridge::motor_controls::Motor::actuate(Direction direction,
 
 void gpio_bridge::motor_controls::Motor::stop()
 {
-   while (m_duty_cycle > 0) {
-      if (m_duty_cycle < DUTY_CYCLE_DELTA) {
-         m_pwm_pin.duty_cycle(0);
-         break;
-      }
-
-      m_duty_cycle -= DUTY_CYCLE_DELTA;
-      m_pwm_pin.duty_cycle(m_duty_cycle);
-      gpio::sleep(DELTA_SLEEP_TIME);
-   }
-
-   m_pwm_pin.mode(gpio::pwm::Mode::OFF);
+   m_pwm_pin.duty_cycle(0);
 }
 
 auto gpio_bridge::motor_controls::Motor::handle() const -> gpio_bridge::motor_controls::MotorHandle::sPtr

@@ -15,7 +15,7 @@ class CommandVelocityPublisher : public rclcpp::Node
       m_command_velocity_publisher =
          this->create_publisher<geometry_msgs::msg::TwistStamped>("/diff_drive_controller/cmd_vel", QUALITY_OF_SERVICE);
 
-      m_timer = this->create_wall_timer(100ms, [this] {
+      m_timer = this->create_wall_timer(50ms, [this] {
          geometry_msgs::msg::TwistStamped message;
          message.header.stamp = get_clock()->now();
          message.header.frame_id = "base_link";
@@ -25,7 +25,7 @@ class CommandVelocityPublisher : public rclcpp::Node
 
          message.twist.angular.x = 0;
          message.twist.angular.y = 0;
-         message.twist.angular.z = m_angular_command;
+         message.twist.angular.z = 0;
 
          if (m_forward) {
             m_linear_command += DELTA;
@@ -35,7 +35,7 @@ class CommandVelocityPublisher : public rclcpp::Node
             m_angular_command -= DELTA;
          }
 
-         if (std::abs(m_linear_command) > 1) {
+         if (std::abs(m_linear_command) > 2) {
             m_forward = !m_forward;
          }
 

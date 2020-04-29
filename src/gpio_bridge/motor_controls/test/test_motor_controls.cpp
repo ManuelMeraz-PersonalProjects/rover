@@ -16,7 +16,7 @@ auto main() -> int
    gpio_bridge::motor_controls::Command command{gpio_bridge::motor_controls::Direction::FORWARD, DUTY_CYCLE, 10s};
    controller.actuate(command);
 
-   RCLCPP_INFO(logger, "Actuating motors reverse for 10 seconds at 100% duty cycle");
+   RCLCPP_INFO(logger, "Actuating motors reverse for 10 seconds at 100%% duty cycle");
    command.direction = gpio_bridge::motor_controls::Direction::REVERSE;
    controller.actuate(command);
 }
