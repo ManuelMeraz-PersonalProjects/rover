@@ -45,6 +45,13 @@ def generate_launch_description():
                  '0', '0', '0.03', '0', '0', '0', 'base_link',
                  'imu_bno055_link'
              ]),
+        Node(package='tf2_ros',
+             node_executable='static_transform_publisher',
+             output='screen',
+             arguments=[
+                 '0.2', '0', '0.05', '0', '0', '0', 'base_link',
+                 'laser_frame'
+             ]),
         Node(
             package='robot_localization',
             node_executable='ekf_node',
@@ -55,19 +62,19 @@ def generate_launch_description():
                           'ekf.yaml')
             ],
         ),
-        # Node(
-        #     node_name='rplidarNodeClient',
-        #     package='rplidar_ros',
-        #     node_executable='rplidarNodeClient',
-        #     output='screen',
-        #     parameters=[{
-        #         'serial_port': '/dev/ttyUSB0',
-        #         'serial_baudrate': 115200,
-        #         'frame_id': 'laser',
-        #         'inverted': False,
-        #         'angle_compensate': True,
-        #     }],
-        # ),
+        Node(
+            name='rplidarNode',
+            package='rplidar_ros',
+            node_executable='rplidarNode',
+            output='screen',
+            parameters=[{
+                'serial_port': '/dev/ttyUSB0',
+                'serial_baudrate': 115200,
+                'frame_id': 'laser',
+                'inverted': False,
+                'angle_compensate': True,
+            }],
+        ),
         Node(
             package='rover_base',
             node_executable='timestamped_key_teleop',
