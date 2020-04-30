@@ -6,6 +6,7 @@
 
 #include <Adafruit_BNO055.h>
 #include <chrono>
+#include <filesystem>
 
 namespace gpio_bridge::imu {
 constexpr std::chrono::milliseconds IMU_SAMPLE_RATE{100};
@@ -21,9 +22,9 @@ class Sensor
    [[nodiscard]] static auto get() -> Sensor&;
    [[nodiscard]] auto data() -> const Data&;
    [[nodiscard]] auto calibration_status() -> const Calibration&;
-   [[nodiscard]] auto fully_calibrated() -> bool;
+   [[nodiscard]] auto fully_calibrated() const -> bool;
 
-   auto load_calibration_data(std::string_view calibration_data_path) -> void;
+   auto load_calibration_data(const std::filesystem::path& calibration_data_path) -> void;
 
  private:
    enum class SystemStatus : uint8_t {
@@ -79,7 +80,7 @@ class Sensor
    Adafruit_BNO055 m_sensor;
    Data m_data{};
    Calibration m_calibration_status{};
-   std::string m_calibration_data_path{};
+   std::filesystem::path m_calibration_data_path{};
 };
 } // namespace gpio_bridge::imu
 #endif // GPIO_BRIDGE_IMU_HPP

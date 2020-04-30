@@ -50,6 +50,22 @@ Sensor::~Sensor()
    }
 
    adafruit_bno055_offsets_t calibration_data;
+   m_sensor.getSensorOffsets(calibration_data);
+   RCLCPP_INFO(logger, "Calibration Offets");
+   RCLCPP_INFO(logger, "Acceleration");
+   RCLCPP_INFO(logger, "x: %d", calibration_data.accel_offset_x);
+   RCLCPP_INFO(logger, "y: %d", calibration_data.accel_offset_y);
+   RCLCPP_INFO(logger, "z: %d", calibration_data.accel_offset_z);
+   RCLCPP_INFO(logger, "radius: %d", calibration_data.accel_radius);
+   RCLCPP_INFO(logger, "Gyroscope");
+   RCLCPP_INFO(logger, "x: %d", calibration_data.gyro_offset_x);
+   RCLCPP_INFO(logger, "y: %d", calibration_data.mag_offset_y);
+   RCLCPP_INFO(logger, "z: %d", calibration_data.mag_offset_z);
+   RCLCPP_INFO(logger, "Magnetometer");
+   RCLCPP_INFO(logger, "x: %d", calibration_data.mag_offset_x);
+   RCLCPP_INFO(logger, "y: %d", calibration_data.mag_offset_y);
+   RCLCPP_INFO(logger, "z: %d", calibration_data.mag_offset_z);
+   RCLCPP_INFO(logger, "radius: %d", calibration_data.mag_radius);
 
    std::ofstream outfile;
    outfile.open(m_calibration_data_path.c_str(), std::ios::binary | std::ios::out);
@@ -193,25 +209,45 @@ auto Sensor::calibration_status() -> const Calibration&
    return m_calibration_status;
 }
 
-auto Sensor::load_calibration_data(std::string_view calibration_data_path) -> void
+auto Sensor::load_calibration_data(const std::filesystem::path& calibration_data_path) -> void
 {
-   // For saving the data later
    const auto& logger = rclcpp::get_logger("IMU Loading Calibration");
-   RCLCPP_INFO(logger, "Loading IMU calibration data from: %s", calibration_data_path.data());
-   m_calibration_data_path = calibration_data_path.data();
+   if (!std::filesystem::exists(calibration_data_path)) {
+      RCLCPP_ERROR(logger, "Must pass in a valid path.");
+      throw std::invalid_argument(calibration_data_path.c_str());
+   }
+
+   // For saving the data later
+   RCLCPP_INFO(logger, "Loading IMU calibration data from: %s", calibration_data_path.c_str());
+   m_calibration_data_path = calibration_data_path;
 
    adafruit_bno055_offsets_t calibration_data{};
    std::ifstream calibration_data_file;
-   calibration_data_file.open(calibration_data_path.data(), std::ios::binary | std::ios::in);
+   calibration_data_file.open(m_calibration_data_path.c_str(), std::ios::binary | std::ios::in);
    calibration_data_file.read(reinterpret_cast<char*>(&calibration_data),
                               sizeof(calibration_data)); // reads 7 bytes into a cell that is either 2 or 4
-
+   RCLCPP_INFO(logger, "Calibration Offets");
+   RCLCPP_INFO(logger, "Acceleration");
+   RCLCPP_INFO(logger, "x: %d", calibration_data.accel_offset_x);
+   RCLCPP_INFO(logger, "y: %d", calibration_data.accel_offset_y);
+   RCLCPP_INFO(logger, "z: %d", calibration_data.accel_offset_z);
+   RCLCPP_INFO(logger, "radius: %d", calibration_data.accel_radius);
+   RCLCPP_INFO(logger, "Gyroscope");
+   RCLCPP_INFO(logger, "x: %d", calibration_data.gyro_offset_x);
+   RCLCPP_INFO(logger, "y: %d", calibration_data.gyro_offset_y);
+   RCLCPP_INFO(logger, "z: %d", calibration_data.gyro_offset_z);
+   RCLCPP_INFO(logger, "Magnetometer");
+   RCLCPP_INFO(logger, "x: %d", calibration_data.mag_offset_x);
+   RCLCPP_INFO(logger, "y: %d", calibration_data.mag_offset_y);
+   RCLCPP_INFO(logger, "z: %d", calibration_data.mag_offset_z);
+   RCLCPP_INFO(logger, "radius: %d", calibration_data.mag_radius);
    m_sensor.setSensorOffsets(calibration_data);
 }
 
-auto Sensor::fully_calibrated() -> bool
+auto Sensor::fully_calibrated() const -> bool
 {
-   return m_sensor.isFullyCalibrated();
+   return m_calibration_status.accelerometer == 3 and m_calibration_status.gyroscope == 3 and
+          m_calibration_status.magnetometer == 3;
 }
 
 } // namespace gpio_bridge::imu

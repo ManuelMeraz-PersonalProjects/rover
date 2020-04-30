@@ -12,12 +12,16 @@ void quit(int)
 }
 
 using namespace std::chrono_literals;
-auto main() -> int
+auto main(int argc, char** argv) -> int
 {
    signal(SIGINT, quit);
    namespace imu = gpio_bridge::imu;
    const auto& logger = rclcpp::get_logger("Test IMU");
+   std::string calibration_data_path{};
    auto& sensor = imu::Sensor::get();
+   if (argc > 1) {
+      sensor.load_calibration_data(argv[1]);
+   }
 
    while (program_is_running) {
       std::stringstream imu_str;
