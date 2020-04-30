@@ -214,10 +214,10 @@ auto Sensor::load_calibration_data(const std::filesystem::path& calibration_data
    set_calibraton_offsets(calibration_data);
 }
 
-auto Sensor::fully_calibrated() const -> bool
+auto Sensor::fully_calibrated() -> bool
 {
-   return m_calibration_status.accelerometer == 3 and m_calibration_status.gyroscope == 3 and
-          m_calibration_status.magnetometer == 3;
+   const auto status = calibration_status();
+   return status.accelerometer > 0 and status.gyroscope > 0 and status.magnetometer > 0;
 }
 
 auto Sensor::calibration_offets() -> adafruit_bno055_offsets_t

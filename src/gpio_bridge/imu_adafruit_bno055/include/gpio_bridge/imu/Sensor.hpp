@@ -22,7 +22,7 @@ class Sensor
    [[nodiscard]] static auto get() -> Sensor&;
    [[nodiscard]] auto data() -> const Data&;
    [[nodiscard]] auto calibration_status() -> const Calibration&;
-   [[nodiscard]] auto fully_calibrated() const -> bool;
+   [[nodiscard]] auto fully_calibrated() -> bool;
    [[nodiscard]] auto calibration_offets() -> adafruit_bno055_offsets_t;
    auto print_calibration_offets() -> void;
 

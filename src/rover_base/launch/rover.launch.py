@@ -38,13 +38,13 @@ def generate_launch_description():
                           'diff_drive_controller.yaml')
             ],
         ),
-        # Node(package='tf2_ros',
-        #      node_executable='static_transform_publisher',
-        #      output='screen',
-        #      arguments=[
-        #          '0', '0', '0.03', '0', '0', '0', 'base_link',
-        #          'imu_bno055_link'
-        #      ]),
+        Node(package='tf2_ros',
+             node_executable='static_transform_publisher',
+             output='screen',
+             arguments=[
+                 '0', '0', '0.03', '0', '0', '0', 'base_link',
+                 'imu_bno055_link'
+             ]),
         Node(package='tf2_ros',
              node_executable='static_transform_publisher',
              output='screen',
