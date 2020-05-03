@@ -1,6 +1,7 @@
+from os import environ, path
+
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
-from os import environ, path
 
 from launch import LaunchDescription
 
@@ -63,16 +64,13 @@ def generate_launch_description():
             ],
         ),
         Node(
-            name='rplidarNode',
+            name='rplidar',
             package='rplidar_ros',
-            node_executable='rplidarNode',
+            node_executable='rplidar',
             output='screen',
             parameters=[{
-                'serial_port': '/dev/ttyUSB0',
-                'serial_baudrate': 115200,
-                'frame_id': 'laser',
-                'inverted': False,
-                'angle_compensate': True,
+                path.join(get_package_share_directory('rover_base'), 'config',
+                          'rplidar.yaml')
             }],
         ),
         Node(
