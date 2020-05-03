@@ -55,16 +55,6 @@ def generate_launch_description():
                  'laser_frame'
              ]),
         Node(
-            package='robot_localization',
-            node_executable='ekf_node',
-            name='ekf_filter_node',
-            output='screen',
-            parameters=[
-                path.join(get_package_share_directory('rover_base'), 'config',
-                          'ekf.yaml')
-            ],
-        ),
-        Node(
             package='slam_toolbox',
             node_executable='async_slam_toolbox_node',
             name='slam_toolbox',
@@ -72,6 +62,16 @@ def generate_launch_description():
             parameters=[
                 path.join(get_package_share_directory('rover_base'), 'config',
                           'mapper_params_online_async.yaml')
+            ],
+        ),
+        Node(
+            package='robot_localization',
+            node_executable='ekf_node',
+            name='ekf_filter_node',
+            output='screen',
+            parameters=[
+                path.join(get_package_share_directory('rover_base'), 'config',
+                          'ekf.yaml')
             ],
         ),
         Node(
