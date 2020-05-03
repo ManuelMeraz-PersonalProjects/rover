@@ -74,16 +74,16 @@ def generate_launch_description():
                           'ekf.yaml')
             ],
         ),
-        Node(
-            name='rplidar',
-            package='rplidar_ros',
-            node_executable='rplidar',
-            output='screen',
-            parameters=[{
-                path.join(get_package_share_directory('rover_base'), 'config',
-                          'rplidar.yaml')
-            }],
-        ),
+        # Node(
+        #     name='rplidar',
+        #     package='rplidar_ros',
+        #     node_executable='rplidar',
+        #     output='screen',
+        #     parameters=[{
+        #         path.join(get_package_share_directory('rover_base'), 'config',
+        #                   'rplidar.yaml')
+        #     }],
+        # ),
         Node(
             package='rover_base',
             node_executable='timestamped_key_teleop',
