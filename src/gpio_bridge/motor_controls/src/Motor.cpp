@@ -2,11 +2,6 @@
 
 #include <odroid/gpio.hpp>
 
-namespace {
-constexpr uint8_t CLOCK_HZ{128};
-constexpr int RANGE{100};
-} // namespace
-
 gpio_bridge::motor_controls::Motor::Motor(std::string name, gpio::digital::Pin& dir_pin, gpio::pwm::Pin& pwm_pin) :
    m_direction(Direction::FORWARD),
    m_duty_cycle(0),
@@ -15,9 +10,6 @@ gpio_bridge::motor_controls::Motor::Motor(std::string name, gpio::digital::Pin& 
    m_name(std::move(name)),
    m_handle(std::make_shared<MotorHandle>())
 {
-   gpio::pwm::clock(CLOCK_HZ);
-   gpio::pwm::range(RANGE);
-
    m_handle->joint_state_handle =
       hardware_interface::JointStateHandle(m_name, &m_handle->position, &m_handle->velocity, &m_handle->effort);
    m_handle->joint_command_handle = hardware_interface::JointCommandHandle(m_name, &m_handle->command);

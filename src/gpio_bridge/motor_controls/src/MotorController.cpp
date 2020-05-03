@@ -9,14 +9,16 @@ namespace digital = gpio::digital;
 namespace pwm = gpio::pwm;
 
 namespace {
+constexpr uint8_t CLOCK_HZ{1};
+constexpr int RANGE{100};
 
 // this is a bit hacky, but the derived class can make allocate a new motor controller
 // but motor controller can't because the constructors are private within that context
-struct make_shared_enabler : public gpio_bridge::motor_controls::MotorController
+struct MakeSharedEnabler : public gpio_bridge::motor_controls::MotorController
 {
 };
 // globals
-std::shared_ptr<make_shared_enabler> g_controller{nullptr};
+std::shared_ptr<MakeSharedEnabler> g_controller{nullptr};
 
 constexpr uint8_t DIR1_WIRING_PI_PIN{21};
 constexpr uint8_t DIR2_WIRING_PI_PIN{22};
@@ -34,6 +36,9 @@ gpio_bridge::motor_controls::MotorController::MotorController()
    auto& dir2_pin = gpio::get<digital::Pin>(DIR2_WIRING_PI_PIN, digital::Mode::OUTPUT);
    auto& pwm1_pin = gpio::get<pwm::Pin>(PWM1_WIRING_PI_PIN, pwm::Mode::OUTPUT);
    auto& pwm2_pin = gpio::get<pwm::Pin>(PWM2_WIRING_PI_PIN, pwm::Mode::OUTPUT);
+
+   gpio::pwm::clock(CLOCK_HZ);
+   gpio::pwm::range(RANGE);
 
    m_left_motor = std::make_unique<gpio_bridge::motor_controls::Motor>("left_wheels", dir1_pin, pwm1_pin);
    m_right_motor = std::make_unique<gpio_bridge::motor_controls::Motor>("right_wheels", dir2_pin, pwm2_pin);
@@ -138,7 +143,7 @@ auto gpio_bridge::motor_controls::MotorController::get() -> gpio_bridge::motor_c
 auto gpio_bridge::motor_controls::MotorController::pointer() -> std::shared_ptr<MotorController>
 {
    if (g_controller == nullptr) {
-      g_controller = std::make_shared<make_shared_enabler>();
+      g_controller = std::make_shared<MakeSharedEnabler>();
    }
 
    return static_cast<std::shared_ptr<MotorController>>(g_controller);
