@@ -41,5 +41,8 @@
 	path = src/slam/slam_toolbox
 	url = git@github.com:stevemacenski/slam_toolbox.git
 [submodule "src/ros2_intel_realsense"]
-	path = src/realsense
+	path = src/vision/realsense
 	url = git@github.com:ManuelMeraz/ros2_intel_realsense.git
+[submodule "src/vision/image_common"]
+	path = src/vision/image_common
+	url = https://github.com/ros-perception/image_common.git
