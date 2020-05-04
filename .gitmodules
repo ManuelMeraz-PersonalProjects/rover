@@ -1,5 +1,5 @@
 [submodule "src/rplidar_ros"]
-	path = src/rplidar_ros
+	path = src/rplidar
 	url = git@github.com:ManuelMeraz/rplidar_ros.git
 [submodule "src/realtime_tools"]
 	path = src/controls/realtime_tools
@@ -40,3 +40,6 @@
 [submodule "src/slam/slam_toolbox"]
 	path = src/slam/slam_toolbox
 	url = git@github.com:stevemacenski/slam_toolbox.git
+[submodule "src/ros2_intel_realsense"]
+	path = src/realsense
+	url = git@github.com:ManuelMeraz/ros2_intel_realsense.git
