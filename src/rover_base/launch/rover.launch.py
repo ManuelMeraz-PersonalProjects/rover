@@ -54,6 +54,20 @@ def generate_launch_description():
                  '0.2', '0', '0.05', '0', '0', '0', 'base_link',
                  'laser_frame'
              ]),
+        Node(package='tf2_ros',
+             node_executable='static_transform_publisher',
+             output='screen',
+             arguments=[
+                 '0.2', '0', '0.08', '0', '0', '0', 't265_link',
+                 'laser_frame'
+             ]),
+        Node(package='tf2_ros',
+             node_executable='static_transform_publisher',
+             output='screen',
+             arguments=[
+                 '0.4', '0', '0.08', '0', '0', '0', 'd435_link',
+                 'laser_frame'
+             ]),
         Node(
             package='slam_toolbox',
             node_executable='async_slam_toolbox_node',
