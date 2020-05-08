@@ -46,3 +46,12 @@
 [submodule "src/vision/image_common"]
 	path = src/vision/image_common
 	url = https://github.com/ros-perception/image_common.git
+[submodule "src/stvl/spatio_temporal_voxel_layer"]
+	path = src/stvl/spatio_temporal_voxel_layer
+	url = git@github.com:stevemacenski/spatio_temporal_voxel_layer
+[submodule "src/stvl/perception_pcl"]
+	path = src/stvl/perception_pcl
+	url = https://github.com/ros-perception/perception_pcl.git
+[submodule "src/stvl/pcl_msgs"]
+	path = src/stvl/pcl_msgs
+	url = https://github.com/ros-perception/pcl_msgs.git
