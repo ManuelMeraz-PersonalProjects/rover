@@ -98,26 +98,26 @@ def generate_launch_description():
                           'rplidar.yaml')
             }],
         ),
-        Node(
-            package='realsense_node',
-            node_executable='realsense_node',
-            namespace="/t265",
-            output='screen',
-            parameters=[
-                path.join(get_package_share_directory('rover_base'), 'config',
-                          'realsense.yaml')
-            ]
-        ),
-        Node(
-            package='realsense_node',
-            node_executable='realsense_node',
-            namespace="/d435",
-            output='screen',
-            parameters=[
-                path.join(get_package_share_directory('rover_base'), 'config',
-                          'realsense.yaml')
-            ]
-        ),
+        # Node(
+        #     package='realsense_node',
+        #     node_executable='realsense_node',
+        #     namespace="/t265",
+        #     output='screen',
+        #     parameters=[
+        #         path.join(get_package_share_directory('rover_base'), 'config',
+        #                   'realsense.yaml')
+        #     ]
+        # ),
+        # Node(
+        #     package='realsense_node',
+        #     node_executable='realsense_node',
+        #     namespace="/d435",
+        #     output='screen',
+        #     parameters=[
+        #         path.join(get_package_share_directory('rover_base'), 'config',
+        #                   'realsense.yaml')
+        #     ]
+        # ),
         Node(
             package='rover_base',
             node_executable='timestamped_key_teleop',
