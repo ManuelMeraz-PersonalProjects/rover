@@ -44,7 +44,7 @@ gpio_bridge::motor_controls::MotorController::MotorController()
    m_right_motor = std::make_unique<gpio_bridge::motor_controls::Motor>("right_wheels", dir2_pin, pwm2_pin);
 }
 
-hardware_interface::hardware_interface_ret_t gpio_bridge::motor_controls::MotorController::init()
+auto gpio_bridge::motor_controls::MotorController::init() -> hardware_interface::hardware_interface_ret_t
 {
 
    const auto init_motor = [this](const MotorHandle::sPtr& handle) {
@@ -66,7 +66,7 @@ hardware_interface::hardware_interface_ret_t gpio_bridge::motor_controls::MotorC
    return hardware_interface::HW_RET_OK;
 }
 
-hardware_interface::hardware_interface_ret_t gpio_bridge::motor_controls::MotorController::read()
+auto gpio_bridge::motor_controls::MotorController::read() -> hardware_interface::hardware_interface_ret_t
 {
    auto left_motor_handle = m_left_motor->handle();
    auto right_motor_handle = m_right_motor->handle();
@@ -77,7 +77,7 @@ hardware_interface::hardware_interface_ret_t gpio_bridge::motor_controls::MotorC
    return hardware_interface::HW_RET_OK;
 }
 
-hardware_interface::hardware_interface_ret_t gpio_bridge::motor_controls::MotorController::write()
+auto gpio_bridge::motor_controls::MotorController::write() -> hardware_interface::hardware_interface_ret_t
 {
    auto left_motor_handle = m_left_motor->handle();
    auto right_motor_handle = m_right_motor->handle();
