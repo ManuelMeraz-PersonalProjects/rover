@@ -24,7 +24,7 @@ class Sensor
    [[nodiscard]] auto calibration_status() -> const Calibration&;
    [[nodiscard]] auto fully_calibrated() -> bool;
    [[nodiscard]] auto calibration_offets() -> adafruit_bno055_offsets_t;
-   auto print_calibration_offets() -> void;
+   auto print_calibration_offets(const adafruit_bno055_offsets_t& calibration_data) -> void;
 
    auto set_calibraton_offsets(const adafruit_bno055_offsets_t& calibration_data) -> void;
    auto load_calibration_data(const std::filesystem::path& calibration_data_path) -> void;

@@ -27,10 +27,18 @@ class IMUBNO055Publisher : public rclcpp::Node
 
       m_publisher_timer = this->create_wall_timer(gpio_bridge::imu::IMU_SAMPLE_RATE, [this] { timercallback(); });
 
+      if (m_sensor.fully_calibrated()) {
+         RCLCPP_WARN(get_logger(), "IMU calibrated. Starting publisher.");
+         m_publisher_timer = this->create_wall_timer(gpio_bridge::imu::IMU_SAMPLE_RATE, [this] { timercallback(); });
+      }
+
       m_calibration_timer = this->create_wall_timer(5s, [this] {
          const auto& logger = get_logger();
          if (!m_sensor.fully_calibrated()) {
             RCLCPP_WARN(logger, "IMU not fully calibrated. Waiting for auto calibration before publishing out data.");
+            std::stringstream ss;
+            ss << m_sensor.calibration_status();
+            RCLCPP_INFO(logger, "\n%s", ss.str().c_str());
             m_publisher_timer->cancel();
          } else if (m_publisher_timer->is_canceled()) {
             RCLCPP_INFO(logger, "IMU is fully calibrated! Will now begin publishing imu data.");

@@ -46,10 +46,12 @@ Sensor::~Sensor()
       RCLCPP_INFO(logger, "Saving calibration data in current directory: calibration_data.data");
       m_calibration_data_path = "calibration_data.dat";
    } else {
-      RCLCPP_INFO(logger, "Calibration data was previously loaded. Saving calibration data in same location");
+      RCLCPP_INFO(
+         logger, "Calibration data was previously loaded. Saving calibration %s: ", m_calibration_data_path.c_str());
    }
 
    auto calibration_data = calibration_offets();
+   print_calibration_offets(calibration_data);
 
    std::ofstream outfile;
    outfile.open(m_calibration_data_path.c_str(), std::ios::binary | std::ios::out);
@@ -201,6 +203,11 @@ auto Sensor::load_calibration_data(const std::filesystem::path& calibration_data
       throw std::invalid_argument(calibration_data_path.c_str());
    }
 
+   if (m_sensor.isFullyCalibrated()) {
+      RCLCPP_INFO(logger, "Won't load calibration data. BNO055 already fully calibrated");
+      return;
+   }
+
    // For saving the data later
    RCLCPP_INFO(logger, "Loading IMU calibration data from: %s", calibration_data_path.c_str());
    m_calibration_data_path = calibration_data_path;
@@ -212,6 +219,7 @@ auto Sensor::load_calibration_data(const std::filesystem::path& calibration_data
                               sizeof(calibration_data)); // reads 7 bytes into a cell that is either 2 or 4
 
    set_calibraton_offsets(calibration_data);
+   print_calibration_offets(calibration_data);
 }
 
 auto Sensor::fully_calibrated() -> bool
@@ -232,11 +240,9 @@ auto Sensor::set_calibraton_offsets(const adafruit_bno055_offsets_t& calibration
    m_sensor.setSensorOffsets(calibration_data);
 }
 
-auto Sensor::print_calibration_offets() -> void
+auto Sensor::print_calibration_offets(const adafruit_bno055_offsets_t& calibration_data) -> void
 {
    const auto& logger = rclcpp::get_logger("IMU Calibration");
-   adafruit_bno055_offsets_t calibration_data;
-   m_sensor.getSensorOffsets(calibration_data);
    RCLCPP_INFO(logger, "Calibration Offets");
    RCLCPP_INFO(logger, "Acceleration");
    RCLCPP_INFO(logger, "x: %d", calibration_data.accel_offset_x);
