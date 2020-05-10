@@ -243,21 +243,21 @@ auto Sensor::set_calibraton_offsets(const adafruit_bno055_offsets_t& calibration
 auto Sensor::print_calibration_offets(const adafruit_bno055_offsets_t& calibration_data) -> void
 {
    const auto& logger = rclcpp::get_logger("IMU Calibration");
-   RCLCPP_INFO(logger, "Calibration Offets");
-   RCLCPP_INFO(logger, "Acceleration");
-   RCLCPP_INFO(logger, "x: %d", calibration_data.accel_offset_x);
-   RCLCPP_INFO(logger, "y: %d", calibration_data.accel_offset_y);
-   RCLCPP_INFO(logger, "z: %d", calibration_data.accel_offset_z);
-   RCLCPP_INFO(logger, "radius: %d", calibration_data.accel_radius);
-   RCLCPP_INFO(logger, "Gyroscope");
-   RCLCPP_INFO(logger, "x: %d", calibration_data.gyro_offset_x);
-   RCLCPP_INFO(logger, "y: %d", calibration_data.mag_offset_y);
-   RCLCPP_INFO(logger, "z: %d", calibration_data.mag_offset_z);
-   RCLCPP_INFO(logger, "Magnetometer");
-   RCLCPP_INFO(logger, "x: %d", calibration_data.mag_offset_x);
-   RCLCPP_INFO(logger, "y: %d", calibration_data.mag_offset_y);
-   RCLCPP_INFO(logger, "z: %d", calibration_data.mag_offset_z);
-   RCLCPP_INFO(logger, "radius: %d", calibration_data.mag_radius);
+   RCLCPP_DEBUG(logger, "Calibration Offets");
+   RCLCPP_DEBUG(logger, "Acceleration");
+   RCLCPP_DEBUG(logger, "x: %d", calibration_data.accel_offset_x);
+   RCLCPP_DEBUG(logger, "y: %d", calibration_data.accel_offset_y);
+   RCLCPP_DEBUG(logger, "z: %d", calibration_data.accel_offset_z);
+   RCLCPP_DEBUG(logger, "radius: %d", calibration_data.accel_radius);
+   RCLCPP_DEBUG(logger, "Gyroscope");
+   RCLCPP_DEBUG(logger, "x: %d", calibration_data.gyro_offset_x);
+   RCLCPP_DEBUG(logger, "y: %d", calibration_data.mag_offset_y);
+   RCLCPP_DEBUG(logger, "z: %d", calibration_data.mag_offset_z);
+   RCLCPP_DEBUG(logger, "Magnetometer");
+   RCLCPP_DEBUG(logger, "x: %d", calibration_data.mag_offset_x);
+   RCLCPP_DEBUG(logger, "y: %d", calibration_data.mag_offset_y);
+   RCLCPP_DEBUG(logger, "z: %d", calibration_data.mag_offset_z);
+   RCLCPP_DEBUG(logger, "radius: %d", calibration_data.mag_radius);
 }
 
 } // namespace gpio_bridge::imu
