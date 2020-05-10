@@ -3,6 +3,7 @@
 #include <joint_state_controller/joint_state_controller.hpp>
 #include <motor_controls/MotorController.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <utility>
 
 using namespace std::chrono_literals;
 
@@ -11,7 +12,9 @@ class DiffDriveControllerNode : public rclcpp::Node
  public:
    DiffDriveControllerNode(gpio_bridge::motor_controls::MotorController::sPtr motor_controller,
                            std::shared_ptr<controller_manager::ControllerManager> controller_manager) :
-      Node("diff_drive_controller_node"), m_motor_controller(motor_controller), m_controller_manager(controller_manager)
+      Node("diff_drive_controller_node"),
+      m_motor_controller(std::move(motor_controller)),
+      m_controller_manager(std::move(controller_manager))
    {
       const auto logger = this->get_logger();
 
