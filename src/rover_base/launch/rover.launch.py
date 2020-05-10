@@ -58,14 +58,14 @@ def generate_launch_description():
              node_executable='static_transform_publisher',
              output='screen',
              arguments=[
-                 '0.6', '0', '0.05', '0', '0', '0', 'base_link',
-                 't265_link'
+                 '0.06', '0.02', '0.05', '0', '0', '0', 'base_link',
+                 'camera_pose_optical_frame'
              ]),
         Node(package='tf2_ros',
              node_executable='static_transform_publisher',
              output='screen',
              arguments=[
-                 '0.6', '0', '0.07', '0', '0', '0', 'base_link',
+                 '0.06', '0.02', '0.07', '0', '0', '0', 'base_link',
                  'd435_link'
              ]),
         Node(
@@ -98,26 +98,26 @@ def generate_launch_description():
                           'rplidar.yaml')
             }],
         ),
-        # Node(
-        #     package='realsense_node',
-        #     node_executable='realsense_node',
-        #     namespace="/t265",
-        #     output='screen',
-        #     parameters=[
-        #         path.join(get_package_share_directory('rover_base'), 'config',
-        #                   'realsense.yaml')
-        #     ]
-        # ),
-        # Node(
-        #     package='realsense_node',
-        #     node_executable='realsense_node',
-        #     namespace="/d435",
-        #     output='screen',
-        #     parameters=[
-        #         path.join(get_package_share_directory('rover_base'), 'config',
-        #                   'realsense.yaml')
-        #     ]
-        # ),
+        Node(
+            package='realsense_node',
+            node_executable='realsense_node',
+            namespace="/t265",
+            output='screen',
+            parameters=[
+                path.join(get_package_share_directory('rover_base'), 'config',
+                          'realsense.yaml')
+            ]
+        ),
+        Node(
+            package='realsense_node',
+            node_executable='realsense_node',
+            namespace="/d435",
+            output='screen',
+            parameters=[
+                path.join(get_package_share_directory('rover_base'), 'config',
+                          'realsense.yaml')
+            ]
+        ),
         Node(
             package='rover_base',
             node_executable='timestamped_key_teleop',
